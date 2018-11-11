@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<TemplateManager>
+	<Template Name="Template 1" PageGUID="59572F03-964E-4CAD-BDC9-DD9D768C2E1D">
+		<Page Name="Page 1" PageGUID="C4CBF90C-6897-4246-BC0B-AB8C5319B61C" />
+	</Template>
+</TemplateManager>

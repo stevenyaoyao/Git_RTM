@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<Page Version="4000" TimeStamp="2018-10-20 07:34:45">
+	<PageEditSize Type="Inherited" />
+	<ProjectUUID>20A64307-D37A-4636-9D0C-B75FF96EC84A</ProjectUUID>
+	<TemplatesTabOrderPosition>1</TemplatesTabOrderPosition>
+	<Background Inherited="true" />
+	<PageObject Type="Button">
+		<Location top="54" left="30" bottom="90" right="150" />
+		<TabOrder>1</TabOrder>
+		<LeaveOnEnter>false</LeaveOnEnter>
+		<ButtonType>Text</ButtonType>
+		<Title>"Load Input Data"</Title>
+		<BackgroundColor RGB="#00ffff" />
+		<ForegroundColor RGB="#0000ff" />
+		<Font GUID="1D47E2B7-A8FC-4081-B0F9-465228BAE46D" Name="Menu1" />
+		<ActionSequence>
+			<Action Type="Run">
+				<RunWhat>SpecificProcecure</RunWhat>
+				<Procedure>ReadInput</Procedure>
+				<AbortOnError>true</AbortOnError>
+			</Action>
+		</ActionSequence>
+	</PageObject>
+	<PageObject Type="Button">
+		<Location top="118" left="30" bottom="154" right="150" />
+		<TabOrder>1</TabOrder>
+		<LeaveOnEnter>false</LeaveOnEnter>
+		<ButtonType>Text</ButtonType>
+		<Title>"Preprocess"</Title>
+		<BackgroundColor RGB="#00ffff" />
+		<ForegroundColor RGB="#0000ff" />
+		<Font GUID="1D47E2B7-A8FC-4081-B0F9-465228BAE46D" Name="Menu1" />
+		<ActionSequence>
+			<Action Type="Run">
+				<RunWhat>SpecificProcecure</RunWhat>
+				<Procedure>Prepocess</Procedure>
+				<AbortOnError>true</AbortOnError>
+			</Action>
+		</ActionSequence>
+	</PageObject>
+	<PageObject Type="Button">
+		<Location top="182" left="30" bottom="218" right="150" />
+		<TabOrder>1</TabOrder>
+		<LeaveOnEnter>false</LeaveOnEnter>
+		<ButtonType>Text</ButtonType>
+		<Title>"Solve"</Title>
+		<BackgroundColor RGB="#00ffff" />
+		<ForegroundColor RGB="#0000ff" />
+		<Font GUID="1D47E2B7-A8FC-4081-B0F9-465228BAE46D" Name="Menu1" />
+	</PageObject>
+	<PageObject Type="Button">
+		<Location top="246" left="30" bottom="282" right="150" />
+		<TabOrder>1</TabOrder>
+		<LeaveOnEnter>false</LeaveOnEnter>
+		<ButtonType>Text</ButtonType>
+		<Title>"Result"</Title>
+		<BackgroundColor RGB="#00ffff" />
+		<ForegroundColor RGB="#0000ff" />
+		<Font GUID="1D47E2B7-A8FC-4081-B0F9-465228BAE46D" Name="Menu1" />
+	</PageObject>
+	<UsedReferences>
+		<Model>
+			<Symbol>Prepocess</Symbol>
+			<Symbol>ReadInput</Symbol>
+		</Model>
+	</UsedReferences>
+</Page>

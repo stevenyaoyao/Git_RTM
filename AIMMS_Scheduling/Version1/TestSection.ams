@@ -1,0 +1,31 @@
+## ams_version=1.0
+
+Section TestSection {
+    Procedure Procedure_test;
+    DeclarationSection TestData {
+        Parameter hour_test {
+            Unit: hour;
+            Definition: 11;
+        }
+        Parameter test {
+            Unit: day;
+            Definition: {
+                abs(First(S_CalendarDate) - '2018-09-01');
+            }
+        }
+        Parameter test2 {
+            Range: binary;
+            Definition: First(S_CalendarDate) + 100[day] > '2018-02-01' - 3[day];
+        }
+        StringParameter test3 {
+            Definition: {
+                MomentToTimeSlot(
+                S_CalendarDate, ! (input) a calendar
+                First(S_CalendarDate) + 3[day], ! (input) an element (time-slot) in the calendar
+                -0.4[day] ! (input) a numerical value
+                )
+            }
+        }
+        Parameter P_Sample1;
+    }
+}

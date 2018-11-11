@@ -1,0 +1,947 @@
+## ams_version=1.0
+
+Model Main_AIMMS_Scheduling {
+    Section Raw_Input {
+        Procedure ReadInput {
+            Body: {
+                empty Input_Sets_and_Parameters;
+                ! Read Sets
+                P_FileName := "InputData\\CleanData_v2.xlsx";
+                SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"Sets");
+                numRows := 20;
+                dataRangeStr := formatString("E2:E%i",numRows);
+                SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_VesselType, Range:dataRangeStr, Mode:'replace');
+                
+                numRows := 200;
+                dataRangeStr := formatString("D2:D%i",numRows);
+                SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_Port, Range:dataRangeStr, Mode:'replace');
+                
+                numRows := 200;
+                dataRangeStr := formatString("C2:C%i",numRows);
+                SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_Customer, Range:dataRangeStr, Mode:'replace');
+                
+                numRows := 20;
+                dataRangeStr := formatString("B2:B%i",numRows);
+                SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_FreightMechanism, Range:dataRangeStr, Mode:'replace');
+                
+                numRows := 20;
+                dataRangeStr := formatString("F2:F%i",numRows);
+                SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_VesselCategory, Range:dataRangeStr, Mode:'replace');
+                
+                SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"Vessel");
+                numRows := 200;
+                dataRangeStr := formatString("A2:A%i",numRows);
+                SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_Vessel, Range:dataRangeStr, Mode:'replace');
+                
+                ! Read CargoPosition Data
+                SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"CargoPosition");
+                numRows := 200;
+                dataRangeStr := formatString("A2:A%i",numRows);
+                SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_CargoPosition, Range:dataRangeStr, Mode:'replace');
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("B2:B%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_StatusOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("C2:C%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_CustomerOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("D2:D%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_FreightMechanismOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("E2:E%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_FreightRate, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("F2:F%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_LaycanStartDateOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("G2:G%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_LaycanEndDateOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("L2:L%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ETATargetOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("K2:K%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ETBTargetOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("N2:N%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ETDTargetOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                !rowRangeStr := formatString("A2:A%i",numRows);
+                !dataRangeStr := formatString("N2:N%i", numRows);
+                !SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ETDTargetOfCargoPositionWithTime, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("M2:M%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_CargoStemSizeOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("H2:H%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_CargoTierOfCargoPostion, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("J2:J%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_LoadingPortOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                rowRangeStr := formatString("A2:A%i",numRows);
+                dataRangeStr := formatString("I2:I%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_RequireESSOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                
+                ! Read PortDistance Data
+                SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"PortDistance");
+                numRows := 500;
+                rowRangeStr := formatString("A2:A%i",numRows);
+                columnRangeStr := formatString("B1:E1");
+                dataRangeStr := formatString("B2:E%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_Distance, DataRange:dataRangeStr, RowsRange:rowRangeStr, ColumnsRange:columnRangeStr);
+                
+                ! Read PortVesselCategoryCompability Data
+                SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"PortVesselCategoryCompatibility");
+                numRows := 500;
+                rowRangeStr := formatString("A2:A%i",numRows);
+                columnRangeStr := formatString("B1:F1");
+                dataRangeStr := formatString("B2:F%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_PortVesselCategoryCompatibility, DataRange:dataRangeStr, RowsRange:rowRangeStr, ColumnsRange:columnRangeStr);
+                
+                ! Read PortSailingDraft
+                SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"PortSailingDraft");
+                
+                numRows := 1000;
+                rowRangeStr := formatString("A3:B%i",numRows);
+                columnRangeStr := formatString("C2:F2");
+                dataRangeStr := formatString("C3:F%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_TimeOfTide, DataRange:dataRangeStr, RowsRange:rowRangeStr, ColumnsRange:columnRangeStr);
+                
+                rowRangeStr := formatString("A3:B%i",numRows);
+                columnRangeStr := formatString("H2:K2");
+                dataRangeStr := formatString("H3:K%i", numRows);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ValueOfTide, DataRange:dataRangeStr, RowsRange:rowRangeStr, ColumnsRange:columnRangeStr);
+                
+                Spreadsheet::CloseWorkbook(P_FileName, 0);
+                
+                ! Read Vessel Data
+                axll::CloseAllWorkBooks;
+                axll::OpenWorkBook(WorkbookFilename : P_FileName );
+                axll::SelectSheet(SheetName : "Vessel" );
+                axll::ReadRawValues(
+                	IdentifierReference   : P_TypeOfVessel,
+                	DataRange             : "E2:E71",
+                	MergeWithExistingData :  0);
+                
+                axll::ReadRawValues(
+                	IdentifierReference   : P_NameOfVessel,
+                	DataRange             : "B2:B71",
+                	MergeWithExistingData :  0);
+                
+                axll::ReadRawValues(
+                	IdentifierReference   : P_DWTOfVessel,
+                	DataRange             : "F2:F71",
+                	MergeWithExistingData :  0);
+                
+                axll::ReadRawValues(
+                	IdentifierReference   : P_TPCOfVessel,
+                	DataRange             : "I2:I71",
+                	MergeWithExistingData :  0);
+                
+                axll::ReadRawValues(
+                	IdentifierReference   : P_DraftOfVessel,
+                	DataRange             : "H2:H71",
+                	MergeWithExistingData :  0);
+                
+                axll::ReadRawValues(
+                	IdentifierReference   : P_TCEOfVessel,
+                	DataRange             : "D2:D71",
+                	MergeWithExistingData :  0);
+                
+                axll::ReadRawValues(
+                	IdentifierReference   : P_LadenSpeedOfVessel,
+                	DataRange             : "L2:L71",
+                	MergeWithExistingData :  0);
+                
+                axll::ReadRawValues(
+                	IdentifierReference   : P_BallastSpeedOfVessel,
+                	DataRange             : "J2:J71",
+                	MergeWithExistingData :  0);	
+                
+                axll::ReadRawValues(
+                	IdentifierReference   : P_LadenBunkerConsumptionRateOfVessel,
+                	DataRange             : "M2:M71",
+                	MergeWithExistingData :  0);	
+                
+                axll::ReadRawValues(
+                	IdentifierReference   : P_BallastBunkerConsumptionRateOfVessel,
+                	DataRange             : "K2:K71",
+                	MergeWithExistingData :  0);	
+                
+                axll::ReadRawValues(
+                	IdentifierReference   : P_ScaleOfVessel,
+                	DataRange             : "G2:G71",
+                	MergeWithExistingData :  0);		
+                
+                axll::ReadRawValues(
+                	IdentifierReference   : P_ESSCapabilityOfVessel,
+                	DataRange             : "N2:N71",
+                	MergeWithExistingData :  0);
+                
+                axll::CloseAllWorkBooks;
+                
+                ! Read P_ETDTargetOfCargoPositionWithTime
+                axll::OpenWorkBook(WorkbookFilename : P_FileName );
+                axll::SelectSheet(SheetName : "CargoPosition" );
+                axll::ReadRawValues(
+                	IdentifierReference   : P_ETDTargetOfCargoPositionWithTime,
+                	DataRange             : "N2:N1000",
+                	MergeWithExistingData :  0);
+                axll::CloseAllWorkBooks;
+            }
+            StringParameter P_FileName;
+            Parameter numRows;
+            Parameter numColumns;
+            StringParameter dataRangeStr;
+            StringParameter rowRangeStr;
+            StringParameter columnRangeStr;
+        }
+        DeclarationSection Raw_Input_Data {
+            StringParameter P_ETDTargetOfCargoPositionWithTime {
+                IndexDomain: cap;
+            }
+            Parameter P_PortVesselCategoryCompatibility {
+                IndexDomain: (po,vc);
+                Range: binary;
+            }
+            Set S_VesselCategory {
+                Index: vc;
+            }
+            Set P_SNForTide {
+                Index: snt;
+                Definition: Data{1, 2};
+            }
+            StringParameter P_TimeOfTide {
+                IndexDomain: (dt,snt,po);
+            }
+            Parameter P_ValueOfTide {
+                IndexDomain: (dt,snt,po);
+                Unit: m;
+            }
+            StringParameter P_TimeFormat {
+                Definition: "%c%y-%m-%d %H%M%S";
+            }
+        }
+        Procedure Prepocess {
+            Body: {
+                empty Processed_Data;
+                empty Derived_Sets_and_Parameters;
+                
+                !Dummy input data
+                P_CurrentPortETDOfVessel(ve) := '2018-09-01';
+                P_BallastSpeedOfVessel(ve | P_BallastSpeedOfVessel(ve) <= 0[nm/hour]) := 12[nm/hour];
+                P_OtherWeightOfVessel(ve) := 100[ton];
+                
+                P_SNOfPossibleDischargePort := First(sn);
+                for (cap | P_AssignedDischargePortOfCargoPosition(cap) <> '') do
+                	P_PossibleDischargePortOfCargoPosition(cap, P_SNOfPossibleDischargePort) := P_AssignedDischargePortOfCargoPosition(cap);
+                	P_ProbabilityDischargePortOfCargoPosition(cap, P_SNOfPossibleDischargePort) := 100[%];
+                	P_TTIPDischargePortOfCargoPosition(cap, P_SNOfPossibleDischargePort) := P_TTIPAssignedDischargePortOfCargoPosition(cap);
+                endfor;
+                
+                !Default value
+                P_CargoPositionVesselCompatibility(cap, ve) := 1;
+                
+                for (cap, ve) do
+                	P_TimeFromCurrentPortToLoadingPort := (P_Distance(P_CurrentPortOfVessel(ve), P_LoadingPortOfCargoPosition(cap)) / P_BallastSpeedOfVessel(ve)) * (1 + P_SeaFactor);
+                	P_VesselETA(cap, ve) := MomentToTimeSlot(
+                					S_CalendarDate, ! (input) a calendar
+                					P_CurrentPortETDOfVessel(ve), ! (input) an element (time-slot) in the calendar
+                					P_TimeFromCurrentPortToLoadingPort ! (input) a numerical value
+                				);
+                endfor;
+                
+                for (cap, ve) do
+                	if P_VesselETA(cap, ve) > (P_ETBTargetOfCargoPosition(cap) - P_ETBBufferBeforeOfCargoPosition(cap)) then 
+                		P_CargoPositionVesselCompatibility(cap, ve) := 0;
+                	endif;
+                
+                	if P_VesselETA(cap, ve) > P_LaycanEndDateOfCargoPosition(cap) then
+                		P_CargoPositionVesselCompatibility(cap, ve) := 0;
+                	endif;
+                
+                	if P_VesselETA(cap, ve) >= P_ETDTargetOfCargoPosition(cap) then
+                		P_CargoPositionVesselCompatibility(cap, ve) := 0;
+                	endif;
+                endfor;
+                
+                P_TTIPLoadingPort((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) := P_ETDTargetOfCargoPosition(cap) - P_VesselETA(cap, ve);
+                
+                !empty P_CategoryOfVessel;
+                for (ve) do
+                	if 175[kton] > P_DWTOfVessel(ve) > 0[kton] then
+                		P_CategoryOfVessel(ve) := 'Small Capesize';
+                	elseif 200[kton] > P_DWTOfVessel(ve) >= 175[kton] then
+                		P_CategoryOfVessel(ve) := 'Standard Capesize';
+                	elseif 220[kton] > P_DWTOfVessel(ve) >= 200[kton] then
+                		P_CategoryOfVessel(ve) := 'Newcastlemax';
+                	elseif 230[kton] > P_DWTOfVessel(ve) >= 220[kton] then
+                		P_CategoryOfVessel(ve) := '210kmt stem VLOC';
+                	elseif 260[kton] > P_DWTOfVessel(ve) >= 230[kton] then
+                		P_CategoryOfVessel(ve) := '235kmt stem VLOC';		
+                	endif;
+                endfor;
+                P_PortVesselCompatibility(po, ve) := P_PortVesselCategoryCompatibility(po, P_CategoryOfVessel(ve));
+                
+                !empty P_LoadingPortSailingDraftOnETD, P_Temp1, P_Temp2;
+                for (cap) do
+                	for ((dt, snt, po) | dt = P_ETDTargetOfCargoPosition(cap) and po = P_LoadingPortOfCargoPosition(cap)) do
+                		if P_TimeOfTide(dt, snt, po) <> "" then
+                			P_Temp1 := StringToMoment(
+                				P_TimeFormat,
+                				[day],
+                				P_ETDTargetOfCargoPositionWithTime(cap),
+                				dt + " " + P_TimeOfTide(dt, snt, po) + "00"
+                			);
+                			if snt = First(P_SNForTide) then
+                				P_Temp2 := abs(P_Temp1);
+                				P_LoadingPortSailingDraftOnETD(cap) := P_ValueOfTide(dt, snt, po);
+                			elseif  abs(P_Temp1) < P_Temp2 then
+                				P_Temp2 := abs(P_Temp1);
+                				P_LoadingPortSailingDraftOnETD(cap) := P_ValueOfTide(dt, snt, po);
+                			endif;
+                		endif;
+                	endfor;
+                endfor;
+                
+                !empty P_VesselAllowedDraft, P_VesselMaxAllowedTon;
+                for ((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) do !only consider those satisfy time constraint
+                	P_VesselAllowedDraft := min(P_DraftOfVessel(ve), P_LoadingPortSailingDraftOnETD(cap));
+                	P_VesselMaxAllowedTon := P_DWTOfVessel(ve) - (P_DraftOfVessel(ve) - P_VesselAllowedDraft) * P_TPCOfVessel(ve);
+                
+                	if P_CargoStemSizeOfCargoPosition(cap) * (1 - P_CargoStemSizeDownVariationPercentage(cap)) > P_VesselMaxAllowedTon then
+                		P_CargoPositionVesselCompatibility(cap, ve) := 0;
+                	else
+                		P_CargoEstimate(cap, ve) := min(P_CargoStemSizeOfCargoPosition(cap) * (1 + P_CargoStemSizeDownVariationPercentage(cap)), P_VesselMaxAllowedTon) - P_OtherWeightOfVessel(ve);
+                	endif;
+                endfor;
+                
+                P_FreightRevenue((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) := P_FreightRate(cap) * P_CargoEstimate(cap, ve);
+                
+                P_d := 62;
+                P_e := 3.5;
+                P_h(cap, po) := 170;
+                P_DifferentialFreightRate(cap) := sum(sn, P_ProbabilityDischargePortOfCargoPosition(cap, sn) * 
+                	((P_a(cap, P_PossibleDischargePortOfCargoPosition(cap, sn)) * (P_c + P_d * P_f) + P_b(cap, P_PossibleDischargePortOfCargoPosition(cap, sn)) * (P_c + P_e * P_f) + P_g(cap, P_PossibleDischargePortOfCargoPosition(cap, sn))) /
+                	P_h(cap, P_PossibleDischargePortOfCargoPosition(cap, sn))));
+                
+                P_DifferentialFreightRevenue((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'OV' or P_TypeOfVessel(ve) = 'TC')) := P_DifferentialFreightRate(cap) * P_CargoEstimate(cap, ve);
+                
+                for ((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) do
+                	P_TurnTime := 0.5[day];
+                	P_LaycanStartDateOfCargoPositionMinusHalfDay := MomentToTimeSlot(
+                								S_CalendarDate, ! (input) a calendar
+                								P_LaycanStartDateOfCargoPosition(cap), ! (input) an element (time-slot) in the calendar
+                								-0.5[day] ! (input) a numerical value
+                							);
+                	if P_VesselETA(cap, ve) <= P_LaycanStartDateOfCargoPositionMinusHalfDay then
+                		P_TurnTime := 0[day];
+                	elseif P_LaycanStartDateOfCargoPosition(cap) > P_VesselETA(cap, ve) > P_LaycanStartDateOfCargoPositionMinusHalfDay then
+                		P_TurnTime := 0.5[day] - (P_LaycanStartDateOfCargoPosition(cap) - P_VesselETA(cap, ve));
+                	endif;
+                
+                	P_AllowedTime := P_TurnTime + P_CargoEstimate(cap, ve) / P_ScaleOfVessel(ve);
+                
+                	if (P_TTIPLoadingPort(cap, ve) - P_AllowedTime) >= 0[day] then
+                		P_DumurrageRevenueLoadingPort(cap, ve) := (P_TTIPLoadingPort(cap, ve) - P_AllowedTime) * P_DemurrageRate(ve);
+                	else
+                		P_DumurrageRevenueLoadingPort(cap, ve) := (P_AllowedTime - P_TTIPLoadingPort(cap, ve)) * P_DemurrageRate(ve) / 2;
+                	endif;
+                endfor;
+                
+                P_CargoRevenue((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) := P_FreightRevenue(cap, ve) + P_DifferentialFreightRevenue(cap, ve);
+                
+                P_BallastTime((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and P_BallastSpeedOfVessel(ve) > 0[nm/hour]) := P_Distance(P_CurrentPortOfVessel(ve), P_LoadingPortOfCargoPosition(cap)) / P_BallastSpeedOfVessel(ve);
+                
+                P_LadenTime((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and P_LadenSpeedOfVessel(ve) > 0[nm/hour]) := 
+                	sum(sn, P_ProbabilityDischargePortOfCargoPosition(cap, sn) * P_Distance(P_LoadingPortOfCargoPosition(cap), P_PossibleDischargePortOfCargoPosition(cap, sn)) / P_LadenSpeedOfVessel(ve));
+                
+                P_ExpectTTIPDischargePortOfCargoPosition(cap) := sum(sn, P_ProbabilityDischargePortOfCargoPosition(cap, sn) * P_TTIPDischargePortOfCargoPosition(cap, sn));
+                
+                P_VoyageLength((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) := P_BallastTime(cap, ve) * (1 + P_SeaFactor) + P_TTIPLoadingPort(cap, ve) + P_LadenTime(cap, ve) * (1 + P_SeaFactor) + P_ExpectTTIPDischargePortOfCargoPosition(cap);
+                
+                P_VesselHireCost((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'OV' or P_TypeOfVessel(ve) = 'TC')) := P_TCEOfVessel(ve) * P_VoyageLength(cap, ve);
+                
+                P_VesselBunkeringCost((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'OV' or P_TypeOfVessel(ve) = 'TC')) := (P_BallastBunkerConsumptionRateOfVessel(ve) * P_BallastTime(cap, ve) +
+                	P_LadenBunkerConsumptionRateOfVessel(ve) * P_LadenTime(cap, ve)) * (1 + P_SeaFactor) * P_BunkerPrice + P_PortBunkerConsumptionRateOfVessel(ve) * (P_TTIPLoadingPort(cap, ve) + P_ExpectTTIPDischargePortOfCargoPosition(cap)) * P_BunkerPrice;
+                
+                P_VesselDifferentialCost((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'OV' or P_TypeOfVessel(ve) = 'TC')) := sum(sn, P_ProbabilityDischargePortOfCargoPosition(cap, sn) * P_TCEOfVessel(ve) *  P_a(cap, P_PossibleDischargePortOfCargoPosition(cap, sn)));
+                
+                P_VesselType1Cost((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'OV' or P_TypeOfVessel(ve) = 'TC')) := P_VesselHireCost(cap, ve) + P_VesselBunkeringCost(cap, ve) + P_VesselDifferentialCost(cap, ve);
+                
+                P_VesselFreightCost((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'VC' or P_TypeOfVessel(ve) = 'COA' or P_TypeOfVessel(ve) = 'CVC')) := P_VesselFreightCostRate(ve) * P_CargoEstimate(cap, ve) * (1 + P_AddcomCostRate);
+                
+                P_DumurrageCostDischargePort((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'VC' or P_TypeOfVessel(ve) = 'COA' or P_TypeOfVessel(ve) = 'CVC')) := sum(sn, 
+                	(P_ProbabilityDischargePortOfCargoPosition(cap, sn) * (P_TTIPDischargePortOfCargoPosition(cap, sn) - P_AllowedTimeAtDischargePort(P_PossibleDischargePortOfCargoPosition(cap, sn)))) * P_DemurrageRate(ve));
+                
+                P_VesselType2Cost((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'VC' or P_TypeOfVessel(ve) = 'COA' or P_TypeOfVessel(ve) = 'CVC')) := P_VesselFreightCost(cap, ve) + P_DumurrageCostDischargePort(cap, ve);
+                
+                P_ETAGapPenalty((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) :=  P_WeightOfETAGapPenalty * abs((P_VesselETA(cap, ve) - P_ETATargetOfCargoPosition(cap)));
+                
+                P_AssignedVesselChangePenalty((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and P_AssignedVesselOfCargoPosition(cap) <> ve) := P_WeightOfAssignedVesselChangePenalty * 1;
+                
+                for((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) do
+                	if P_VesselETA(cap, ve) < (P_ETATargetOfCargoPosition(cap) - P_ETABufferBeforeOfCargoPosition(cap)) then
+                		P_OutsideETATargetWindowPenalty(cap, ve) := P_WeightOfOutsideETATargetWindowPenalty * ((P_ETATargetOfCargoPosition(cap) - P_ETABufferBeforeOfCargoPosition(cap)) - P_VesselETA(cap, ve));
+                	elseif P_VesselETA(cap, ve) > (P_ETATargetOfCargoPosition(cap) + P_ETABufferAfterOfCargoPosition(cap)) then
+                		P_OutsideETATargetWindowPenalty(cap, ve) := P_WeightOfOutsideETATargetWindowPenalty * (P_VesselETA(cap, ve) - (P_ETATargetOfCargoPosition(cap) + P_ETABufferAfterOfCargoPosition(cap)));
+                	else
+                		P_OutsideETATargetWindowPenalty(cap, ve) := 0;
+                	endif;
+                endfor;
+                
+                for((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) do
+                	if P_VesselETA(cap, ve) < P_LaycanStartDateOfCargoPosition(cap) then
+                		P_ETABeforeLaycanPenalty(cap, ve) := P_WeightOfETABeforeLaycanPenalty * (P_LaycanStartDateOfCargoPosition(cap) - P_VesselETA(cap, ve));
+                	else
+                		P_ETABeforeLaycanPenalty(cap, ve) := 0;
+                	endif;
+                endfor;
+                
+                for((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) do
+                	P_LongDischargeTTIPPenalty(cap, ve) := 0;
+                	if (P_ExpectTTIPDischargePortOfCargoPosition(cap) > P_ThresholdOfLongDischargeTTIP and (P_TypeOfVessel(ve) = 'OV' or P_TypeOfVessel(ve) = 'TC')) then
+                		P_LongDischargeTTIPPenalty(cap, ve) := P_LongDischargeTTIPPenaltyParameter;
+                	endif;
+                endfor;
+            }
+        }
+        DeclarationSection Processed_Data {
+            ElementParameter P_SNOfPossibleDischargePort {
+                Range: S_SN;
+            }
+            ElementParameter P_CategoryOfVessel {
+                IndexDomain: ve;
+                Range: S_VesselCategory;
+            }
+            Parameter P_TimeFromCurrentPortToLoadingPort {
+                Unit: hour;
+            }
+            Parameter P_LoadingPortSailingDraftOnETD {
+                IndexDomain: cap;
+                Unit: m;
+            }
+            Parameter P_Temp1 {
+                Unit: day;
+            }
+            Parameter P_Temp2 {
+                Unit: day;
+            }
+            Parameter P_VesselAllowedDraft {
+                Unit: m;
+            }
+            Parameter P_VesselMaxAllowedTon {
+                Unit: ton;
+            }
+            Parameter P_a {
+                IndexDomain: (cap,po);
+                Unit: day;
+            }
+            Parameter P_b {
+                IndexDomain: (cap,po);
+                Unit: day;
+            }
+            Parameter P_c {
+                Unit: $/day;
+            }
+            Parameter P_d {
+                Unit: ton/day;
+            }
+            Parameter P_e {
+                Unit: ton/day;
+            }
+            Parameter P_f {
+                Unit: $/ton;
+            }
+            Parameter P_g {
+                IndexDomain: (cap,po);
+                Unit: $;
+            }
+            Parameter P_h {
+                IndexDomain: (cap,po);
+                Unit: kton;
+            }
+            Parameter P_TurnTime {
+                Unit: day;
+            }
+            ElementParameter P_LaycanStartDateOfCargoPositionMinusHalfDay {
+                Range: S_CalendarDate;
+            }
+            Parameter P_AllowedTime {
+                Unit: day;
+            }
+            Parameter P_ExpectTTIPDischargePortOfCargoPosition {
+                IndexDomain: cap;
+                Unit: day;
+            }
+            Parameter P_BunkerPrice {
+                Unit: $/ton;
+            }
+            Parameter P_AddcomCostRate {
+                Unit: %;
+                Definition: 3.75;
+            }
+            Parameter P_AllowedTimeAtDischargePort {
+                IndexDomain: po;
+                Unit: day;
+            }
+            Parameter P_WeightOfETAGapPenalty {
+                Unit: 1/day;
+            }
+            Parameter P_WeightOfAssignedVesselChangePenalty;
+            Parameter P_WeightOfOutsideETATargetWindowPenalty {
+                Unit: 1/day;
+            }
+            Parameter P_WeightOfETABeforeLaycanPenalty {
+                Unit: 1/day;
+            }
+            Parameter P_ThresholdOfLongDischargeTTIP {
+                Unit: day;
+            }
+            Parameter P_LongDischargeTTIPPenaltyParameter {
+                Range: nonnegative;
+            }
+        }
+        Section TestSection {
+            Procedure Procedure_test;
+            DeclarationSection TestData {
+                Parameter hour_test {
+                    Unit: hour;
+                    Definition: 11;
+                }
+                Parameter test {
+                    Unit: day;
+                    Definition: {
+                        abs(First(S_CalendarDate) - '2018-09-01');
+                    }
+                }
+                Parameter test2 {
+                    Range: binary;
+                    Definition: First(S_CalendarDate) + 100[day] > '2018-02-01' - 3[day];
+                }
+                StringParameter test3 {
+                    Definition: {
+                        MomentToTimeSlot(
+                        S_CalendarDate, ! (input) a calendar
+                        First(S_CalendarDate) + 3[day], ! (input) an element (time-slot) in the calendar
+                        -0.4[day] ! (input) a numerical value
+                        )
+                    }
+                }
+                Parameter P_Sample1;
+            }
+        }
+    }
+    Section Optimization_Model {
+        Section Model_Inputs {
+            DeclarationSection Calendar_Date {
+                Calendar S_CalendarDate {
+                    Index: dt;
+                    Unit: day;
+                    BeginDate: S_BeginDateOfCalendar;
+                    EndDate: S_EndDateOfCalendar;
+                    TimeslotFormat: "%c%y-%m-%d";
+                }
+                StringParameter S_BeginDateOfCalendar {
+                    Definition: "2018-01-01";
+                }
+                StringParameter S_EndDateOfCalendar {
+                    Definition: "2019-12-31";
+                }
+            }
+            DeclarationSection Quantities_and_Units {
+                Quantity SI_Time_Duration {
+                    BaseUnit: day;
+                    Conversions: {
+                        second->day : #-># * 1.157407407e-5,
+                        minute->day : #-># / 1440,
+                        hour  ->day : #-># / 24
+                    }
+                    Comment: "Expresses the value for the duration of periods.";
+                }
+                Quantity SI_Mass {
+                    BaseUnit: ton;
+                    Conversions: kton->ton : #-># * 1000;
+                    Comment: "Expresses the value for the amount of matter.";
+                }
+                Quantity SI_Length {
+                    BaseUnit: m;
+                    Conversions: {
+                        cm->m : #-># / 100,
+                        nm->m : #-># * 1852
+                    }
+                    Comment: "Expresses the value of a distance.";
+                }
+                Quantity Currency {
+                    BaseUnit: $;
+                }
+                Quantity SI_Unitless {
+                    BaseUnit: -;
+                    Conversions: %->- : #-># / 100;
+                    Comment: "Expresses a dimensionless value.";
+                }
+            }
+            Section Input_Sets_and_Parameters {
+                DeclarationSection Input_Sets {
+                    Set S_CargoPosition {
+                        Index: cap;
+                    }
+                    Set S_Vessel {
+                        Index: ve;
+                    }
+                    Set S_VesselType {
+                        Index: vt;
+                    }
+                    Set S_Port {
+                        Index: po, po1, po2;
+                    }
+                    Set S_Customer {
+                        Index: cs;
+                    }
+                    Set S_FreightMechanism {
+                        Index: fm;
+                    }
+                    Set S_SN {
+                        Index: sn;
+                        Definition: elementrange(1,50,1);
+                    }
+                }
+                DeclarationSection Input_Parameters {
+                    StringParameter P_StatusOfCargoPosition {
+                        IndexDomain: cap;
+                    }
+                    StringParameter P_CustomerOfCargoPosition {
+                        IndexDomain: cap;
+                    }
+                    ElementParameter P_FreightMechanismOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: S_FreightMechanism;
+                    }
+                    Parameter P_FreightRate {
+                        IndexDomain: cap;
+                        Unit: $/ton;
+                    }
+                    ElementParameter P_LaycanStartDateOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: S_CalendarDate;
+                    }
+                    ElementParameter P_LaycanEndDateOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: S_CalendarDate;
+                    }
+                    ElementParameter P_ETATargetOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: S_CalendarDate;
+                    }
+                    Parameter P_ETABufferBeforeOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: integer;
+                        Unit: day;
+                    }
+                    Parameter P_ETABufferAfterOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: integer;
+                        Unit: day;
+                    }
+                    ElementParameter P_ETBTargetOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: S_CalendarDate;
+                    }
+                    Parameter P_ETBBufferBeforeOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: integer;
+                        Unit: day;
+                    }
+                    ElementParameter P_ETDTargetOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: S_CalendarDate;
+                    }
+                    Parameter P_CargoStemSizeOfCargoPosition {
+                        IndexDomain: cap;
+                        Unit: kton;
+                    }
+                    Parameter P_CargoStemSizeUpVariationPercentage {
+                        IndexDomain: cap;
+                        Unit: %;
+                    }
+                    Parameter P_CargoStemSizeDownVariationPercentage {
+                        IndexDomain: cap;
+                        Unit: %;
+                    }
+                    StringParameter P_CargoTierOfCargoPostion {
+                        IndexDomain: cap;
+                    }
+                    ElementParameter P_LoadingPortOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: S_Port;
+                    }
+                    ElementParameter P_AssignedDischargePortOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: S_Port;
+                    }
+                    Parameter P_TTIPAssignedDischargePortOfCargoPosition {
+                        IndexDomain: cap;
+                        Unit: day;
+                    }
+                    ElementParameter P_PossibleDischargePortOfCargoPosition {
+                        IndexDomain: (cap,sn);
+                        Range: S_Port;
+                    }
+                    Parameter P_ProbabilityDischargePortOfCargoPosition {
+                        IndexDomain: (cap,sn);
+                        Unit: %;
+                    }
+                    Parameter P_TTIPDischargePortOfCargoPosition {
+                        IndexDomain: (cap,sn);
+                        Unit: day;
+                    }
+                    Parameter P_RequireESSOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: binary;
+                    }
+                    ElementParameter P_FixedVesselOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: S_Vessel;
+                    }
+                    ElementParameter P_AssignedVesselOfCargoPosition {
+                        IndexDomain: cap;
+                        Range: S_Vessel;
+                    }
+                    ElementParameter P_TypeOfVessel {
+                        IndexDomain: ve;
+                        Range: S_VesselType;
+                    }
+                    StringParameter P_NameOfVessel {
+                        IndexDomain: ve;
+                    }
+                    Parameter P_DWTOfVessel {
+                        IndexDomain: ve;
+                        Unit: ton;
+                    }
+                    Parameter P_TPCOfVessel {
+                        IndexDomain: ve;
+                        Unit: ton/cm;
+                    }
+                    Parameter P_DraftOfVessel {
+                        IndexDomain: ve;
+                        Unit: m;
+                    }
+                    Parameter P_TCEOfVessel {
+                        IndexDomain: ve | (P_TypeOfVessel(ve) = "OV" OR P_TypeOfVessel(ve) = "TC");
+                        Unit: $/day;
+                    }
+                    Parameter P_DemurrageRate {
+                        IndexDomain: ve;
+                        Unit: $/day;
+                    }
+                    Parameter P_VesselFreightCostRate {
+                        IndexDomain: ve | (P_TypeOfVessel(ve) = "VC" OR P_TypeOfVessel(ve) = "COA" OR P_TypeOfVessel(ve) = "CVC");
+                        Unit: $/ton;
+                    }
+                    ElementParameter P_CurrentPortOfVessel {
+                        IndexDomain: ve;
+                        Range: S_Port;
+                    }
+                    ElementParameter P_CurrentPortETDOfVessel {
+                        IndexDomain: ve;
+                        Range: S_CalendarDate;
+                    }
+                    Parameter P_LadenSpeedOfVessel {
+                        IndexDomain: ve;
+                        Unit: nm/hour;
+                    }
+                    Parameter P_BallastSpeedOfVessel {
+                        IndexDomain: ve;
+                        Unit: nm/hour;
+                    }
+                    Parameter P_LadenBunkerConsumptionRateOfVessel {
+                        IndexDomain: ve;
+                        Unit: ton/day;
+                    }
+                    Parameter P_BallastBunkerConsumptionRateOfVessel {
+                        IndexDomain: ve;
+                        Unit: ton/day;
+                    }
+                    Parameter P_PortBunkerConsumptionRateOfVessel {
+                        IndexDomain: ve;
+                        Unit: ton/day;
+                    }
+                    Parameter P_ScaleOfVessel {
+                        IndexDomain: ve;
+                        Unit: ton/day;
+                    }
+                    Parameter P_ESSCapabilityOfVessel {
+                        IndexDomain: ve;
+                        Range: binary;
+                    }
+                    Parameter P_OtherWeightOfVessel {
+                        IndexDomain: ve;
+                        Unit: ton;
+                    }
+                    ElementParameter P_OwnerLaycanStartDate {
+                        IndexDomain: (cap,ve);
+                        Range: S_CalendarDate;
+                    }
+                    ElementParameter P_OwnerLaycanEndDate {
+                        IndexDomain: (cap,ve);
+                        Range: S_CalendarDate;
+                    }
+                    Parameter P_Distance {
+                        IndexDomain: (po1,po2);
+                        Unit: nm;
+                    }
+                    Parameter P_SeaFactor {
+                        Unit: %;
+                        Definition: 5;
+                    }
+                }
+            }
+            DeclarationSection Derived_Sets_and_Parameters {
+                Parameter P_CargoPositionVesselCompatibility {
+                    IndexDomain: (cap,ve);
+                    Range: binary;
+                }
+                ElementParameter P_VesselETA {
+                    IndexDomain: (cap,ve);
+                    Range: S_CalendarDate;
+                }
+                Parameter P_TTIPLoadingPort {
+                    IndexDomain: (cap,ve);
+                    Unit: day;
+                }
+                Parameter P_PortVesselCompatibility {
+                    IndexDomain: (po,ve);
+                    Range: binary;
+                }
+                Parameter P_CargoEstimate {
+                    IndexDomain: (cap,ve);
+                    Unit: ton;
+                }
+                Parameter P_FreightRevenue {
+                    IndexDomain: (cap,ve);
+                    Unit: $;
+                }
+                Parameter P_DifferentialFreightRate {
+                    IndexDomain: cap;
+                    Unit: $/ton;
+                }
+                Parameter P_DifferentialFreightRevenue {
+                    IndexDomain: (cap,ve);
+                    Unit: $;
+                }
+                Parameter P_DumurrageRevenueLoadingPort {
+                    IndexDomain: (cap,ve);
+                    Unit: $;
+                }
+                Parameter P_CargoRevenue {
+                    IndexDomain: (cap,ve);
+                    Unit: $;
+                }
+                Parameter P_BallastTime {
+                    IndexDomain: (cap,ve);
+                    Unit: day;
+                }
+                Parameter P_LadenTime {
+                    IndexDomain: (cap,ve);
+                    Unit: day;
+                }
+                Parameter P_VoyageLength {
+                    IndexDomain: (cap,ve);
+                    Unit: day;
+                }
+                Parameter P_VesselHireCost {
+                    IndexDomain: (cap,ve) | (P_TypeOfVessel(ve) = "OV" OR P_TypeOfVessel(ve) = "TC");
+                    Unit: $;
+                }
+                Parameter P_VesselBunkeringCost {
+                    IndexDomain: (cap,ve) | (P_TypeOfVessel(ve) = "OV" OR P_TypeOfVessel(ve) = "TC");
+                    Unit: $;
+                }
+                Parameter P_VesselDifferentialCost {
+                    IndexDomain: (cap,ve) | (P_TypeOfVessel(ve) = "OV" OR P_TypeOfVessel(ve) = "TC");
+                    Unit: $;
+                }
+                Parameter P_VesselType1Cost {
+                    IndexDomain: (cap,ve) | (P_TypeOfVessel(ve) = "OV" OR P_TypeOfVessel(ve) = "TC");
+                    Unit: $;
+                }
+                Parameter P_VesselFreightCost {
+                    IndexDomain: (cap,ve) | (P_TypeOfVessel(ve) = "VC" OR P_TypeOfVessel(ve) = "COA" OR P_TypeOfVessel(ve) = "CVC");
+                    Unit: $;
+                }
+                Parameter P_DumurrageCostDischargePort {
+                    IndexDomain: (cap,ve) | (P_TypeOfVessel(ve) = "VC" or P_TypeOfVessel(ve) = "COA" or P_TypeOfVessel(ve) = "CVC");
+                    Unit: $;
+                }
+                Parameter P_VesselType2Cost {
+                    IndexDomain: (cap,ve) | (P_TypeOfVessel(ve) = "VC" OR P_TypeOfVessel(ve) = "COA" OR P_TypeOfVessel(ve) = "CVC");
+                    Unit: $;
+                }
+                Parameter P_ETAGapPenalty {
+                    IndexDomain: (cap,ve);
+                }
+                Parameter P_AssignedVesselChangePenalty {
+                    IndexDomain: (cap,ve);
+                }
+                Parameter P_OutsideETATargetWindowPenalty {
+                    IndexDomain: (cap,ve);
+                }
+                Parameter P_ETABeforeLaycanPenalty {
+                    IndexDomain: (cap,ve);
+                }
+                Parameter P_LongDischargeTTIPPenalty {
+                    IndexDomain: (cap,ve) | (P_TypeOfVessel(ve) = "OV" OR P_TypeOfVessel(ve) = "TC");
+                    InitialData: 0;
+                }
+            }
+        }
+        Section Model_Decision_Variables;
+        Section Model_Constraints;
+        Section Model_Objectives;
+    }
+    Section Results;
+    Procedure MainInitialization {
+        Comment: "Add initialization statements here that do NOT require any library being initialized already.";
+    }
+    Procedure PostMainInitialization {
+        Comment: {
+            "Add initialization statements here that require that the libraries are already initialized properly,
+            or add statements that require the Data Management module to be initialized."
+        }
+    }
+    Procedure MainExecution;
+    Procedure PreMainTermination {
+        Body: {
+            return DataManagementExit();
+        }
+        Comment: {
+            "Add termination statements here that require all libraries to be still alive.
+            Return 1 if you allow the termination sequence to continue.
+            Return 0 if you want to cancel the termination sequence."
+        }
+    }
+    Procedure MainTermination {
+        Body: {
+            return 1;
+        }
+        Comment: {
+            "Add termination statements here that do not require all libraries to be still alive.
+            Return 1 to allow the termination sequence to continue.
+            Return 0 if you want to cancel the termination sequence.
+            It is recommended to only use the procedure PreMainTermination to cancel the termination sequence and let this procedure always return 1."
+        }
+    }
+}

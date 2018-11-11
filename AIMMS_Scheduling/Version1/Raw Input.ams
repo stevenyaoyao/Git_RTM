@@ -1,0 +1,252 @@
+## ams_version=1.0
+
+Section Raw_Input {
+    Procedure ReadInput {
+        Body: {
+            empty Input_Sets_and_Parameters;
+            ! Read Sets
+            P_FileName := "InputData\\CleanData_v2.xlsx";
+            SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"Sets");
+            numRows := 20;
+            dataRangeStr := formatString("E2:E%i",numRows);
+            SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_VesselType, Range:dataRangeStr, Mode:'replace');
+            
+            numRows := 200;
+            dataRangeStr := formatString("D2:D%i",numRows);
+            SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_Port, Range:dataRangeStr, Mode:'replace');
+            
+            numRows := 200;
+            dataRangeStr := formatString("C2:C%i",numRows);
+            SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_Customer, Range:dataRangeStr, Mode:'replace');
+            
+            numRows := 20;
+            dataRangeStr := formatString("B2:B%i",numRows);
+            SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_FreightMechanism, Range:dataRangeStr, Mode:'replace');
+            
+            numRows := 20;
+            dataRangeStr := formatString("F2:F%i",numRows);
+            SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_VesselCategory, Range:dataRangeStr, Mode:'replace');
+            
+            ! Read CargoPosition Data
+            SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"CargoPosition");
+            numRows := 200;
+            dataRangeStr := formatString("A2:A%i",numRows);
+            SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_CargoPosition, Range:dataRangeStr, Mode:'replace');
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("B2:B%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_StatusOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("C2:C%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_CustomerOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("D2:D%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_FreightMechanismOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("E2:E%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_FreightRate, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("F2:F%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_LaycanStartDateOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("G2:G%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_LaycanEndDateOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("L2:L%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ETATargetOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("K2:K%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ETBTargetOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("N2:N%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ETDTargetOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            !rowRangeStr := formatString("A2:A%i",numRows);
+            !dataRangeStr := formatString("N2:N%i", numRows);
+            !SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ETDTargetOfCargoPositionWithTime, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("M2:M%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_CargoStemSizeOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("H2:H%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_CargoTierOfCargoPostion, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("J2:J%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_LoadingPortOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            rowRangeStr := formatString("A2:A%i",numRows);
+            dataRangeStr := formatString("I2:I%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_RequireESSOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+            
+            ! Read PortDistance Data
+            SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"PortDistance");
+            numRows := 500;
+            rowRangeStr := formatString("A2:A%i",numRows);
+            columnRangeStr := formatString("B1:E1");
+            dataRangeStr := formatString("B2:E%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_Distance, DataRange:dataRangeStr, RowsRange:rowRangeStr, ColumnsRange:columnRangeStr);
+            
+            ! Read PortVesselCategoryCompability Data
+            SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"PortVesselCategoryCompatibility");
+            numRows := 500;
+            rowRangeStr := formatString("A2:A%i",numRows);
+            columnRangeStr := formatString("B1:F1");
+            dataRangeStr := formatString("B2:F%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_PortVesselCategoryCompatibility, DataRange:dataRangeStr, RowsRange:rowRangeStr, ColumnsRange:columnRangeStr);
+            
+            ! Read PortSailingDraft
+            SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"PortSailingDraft");
+            
+            numRows := 1000;
+            rowRangeStr := formatString("A3:B%i",numRows);
+            columnRangeStr := formatString("C2:F2");
+            dataRangeStr := formatString("C3:F%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_TimeOfTide, DataRange:dataRangeStr, RowsRange:rowRangeStr, ColumnsRange:columnRangeStr);
+            
+            rowRangeStr := formatString("A3:B%i",numRows);
+            columnRangeStr := formatString("H2:K2");
+            dataRangeStr := formatString("H3:K%i", numRows);
+            SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ValueOfTide, DataRange:dataRangeStr, RowsRange:rowRangeStr, ColumnsRange:columnRangeStr);
+            
+            Spreadsheet::CloseWorkbook(P_FileName, 0);
+            
+            ! Read Vessel Data
+            axll::CloseAllWorkBooks;
+            axll::OpenWorkBook(WorkbookFilename : P_FileName );
+            axll::SelectSheet(SheetName : "Vessel" );
+            axll::ReadRawValues(
+            	IdentifierReference   : P_TypeOfVessel,
+            	DataRange             : "E2:E71",
+            	MergeWithExistingData :  0);
+            
+            axll::ReadRawValues(
+            	IdentifierReference   : P_NameOfVessel,
+            	DataRange             : "B2:B71",
+            	MergeWithExistingData :  0);
+            
+            axll::ReadRawValues(
+            	IdentifierReference   : P_DWTOfVessel,
+            	DataRange             : "F2:F71",
+            	MergeWithExistingData :  0);
+            
+            axll::ReadRawValues(
+            	IdentifierReference   : P_TPCOfVessel,
+            	DataRange             : "I2:I71",
+            	MergeWithExistingData :  0);
+            
+            axll::ReadRawValues(
+            	IdentifierReference   : P_DraftOfVessel,
+            	DataRange             : "H2:H71",
+            	MergeWithExistingData :  0);
+            
+            axll::ReadRawValues(
+            	IdentifierReference   : P_TCEOfVessel,
+            	DataRange             : "D2:D71",
+            	MergeWithExistingData :  0);
+            
+            axll::ReadRawValues(
+            	IdentifierReference   : P_LadenSpeedOfVessel,
+            	DataRange             : "L2:L71",
+            	MergeWithExistingData :  0);
+            
+            axll::ReadRawValues(
+            	IdentifierReference   : P_BallastSpeedOfVessel,
+            	DataRange             : "J2:J71",
+            	MergeWithExistingData :  0);	
+            
+            axll::ReadRawValues(
+            	IdentifierReference   : P_LadenBunkerConsumptionRateOfVessel,
+            	DataRange             : "M2:M71",
+            	MergeWithExistingData :  0);	
+            
+            axll::ReadRawValues(
+            	IdentifierReference   : P_BallastBunkerConsumptionRateOfVessel,
+            	DataRange             : "K2:K71",
+            	MergeWithExistingData :  0);	
+            
+            axll::ReadRawValues(
+            	IdentifierReference   : P_ScaleOfVessel,
+            	DataRange             : "G2:G71",
+            	MergeWithExistingData :  0);		
+            
+            axll::ReadRawValues(
+            	IdentifierReference   : P_ESSCapabilityOfVessel,
+            	DataRange             : "N2:N71",
+            	MergeWithExistingData :  0);
+            
+            axll::CloseAllWorkBooks;
+            
+            ! Read P_ETDTargetOfCargoPositionWithTime
+            axll::OpenWorkBook(WorkbookFilename : P_FileName );
+            axll::SelectSheet(SheetName : "CargoPosition" );
+            axll::ReadRawValues(
+            	IdentifierReference   : P_ETDTargetOfCargoPositionWithTime,
+            	DataRange             : "N2:N1000",
+            	MergeWithExistingData :  0);
+            axll::CloseAllWorkBooks;
+        }
+        StringParameter P_FileName;
+        Parameter numRows;
+        Parameter numColumns;
+        StringParameter dataRangeStr;
+        StringParameter rowRangeStr;
+        StringParameter columnRangeStr;
+    }
+    DeclarationSection Raw_Input_Data {
+        StringParameter P_ETDTargetOfCargoPositionWithTime {
+            IndexDomain: cap;
+        }
+        Set P_SNForTide {
+            Index: snt;
+            Definition: Data{1, 2};
+        }
+        StringParameter P_TimeOfTide {
+            IndexDomain: (dt,snt,po);
+        }
+        Parameter P_ValueOfTide {
+            IndexDomain: (dt,snt,po);
+            Unit: m;
+        }
+        StringParameter P_TimeFormat {
+            Definition: "%d/%m/%c%y %H%M%S";
+        }
+    }
+    Procedure Prepocess {
+        Body: {
+            empty Processed_Data;
+            
+            P_Sample1 := 3;
+        }
+    }
+    DeclarationSection Processed_Data {
+        StringParameter test {
+            Definition: First(dt) + " " + P_TimeOfTide(First(dt), '1', 'EII') + "00";
+        }
+        Parameter test2 {
+            Unit: m/hour;
+            Definition: 1[nm/hour];
+        }
+        StringParameter test3 {
+            Definition: {
+                MomentToString(
+                P_TimeFormat, ! (input) a calendar
+                [day],
+                "2018" + "-" + TimeSlotCharacteristic(First(S_CalendarDate), 'month') + "-" + TimeSlotCharacteristic(First(S_CalendarDate), 'monthday') + " 14:00:00", ! (input) an element (time-slot) in the calendar
+                0.5[day] ! (input) a numerical value
+                )
+            }
+        }
+        Parameter P_Sample1;
+    }
+}
