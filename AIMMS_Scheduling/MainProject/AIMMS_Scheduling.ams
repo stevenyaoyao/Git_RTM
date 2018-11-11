@@ -5,33 +5,34 @@ Model Main_AIMMS_Scheduling {
         Procedure ReadInput {
             Body: {
                 empty Input_Sets_and_Parameters;
+                
                 ! Read Sets
-                P_FileName := "InputData\\CleanData_v2.xlsx";
+                P_FileName := "InputData\\CleanData_v3.xlsx";
                 SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"Sets");
                 numRows := 20;
-                dataRangeStr := formatString("E2:E%i",numRows);
+                dataRangeStr := formatString("D2:D%i",numRows);
                 SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_VesselType, Range:dataRangeStr, Mode:'replace');
                 
                 numRows := 200;
-                dataRangeStr := formatString("D2:D%i",numRows);
+                dataRangeStr := formatString("C2:C%i",numRows);
                 SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_Port, Range:dataRangeStr, Mode:'replace');
                 
                 numRows := 200;
-                dataRangeStr := formatString("C2:C%i",numRows);
+                dataRangeStr := formatString("B2:B%i",numRows);
                 SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_Customer, Range:dataRangeStr, Mode:'replace');
                 
                 numRows := 20;
-                dataRangeStr := formatString("B2:B%i",numRows);
+                dataRangeStr := formatString("A2:A%i",numRows);
                 SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_FreightMechanism, Range:dataRangeStr, Mode:'replace');
                 
                 numRows := 20;
-                dataRangeStr := formatString("F2:F%i",numRows);
+                dataRangeStr := formatString("E2:E%i",numRows);
                 SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_VesselCategory, Range:dataRangeStr, Mode:'replace');
                 
-                SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"Vessel");
-                numRows := 200;
-                dataRangeStr := formatString("A2:A%i",numRows);
-                SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_Vessel, Range:dataRangeStr, Mode:'replace');
+                !SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"Vessel");
+                !numRows := 200;
+                !dataRangeStr := formatString("A2:A%i",numRows);
+                !SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_Vessel, Range:dataRangeStr, Mode:'replace');
                 
                 ! Read CargoPosition Data
                 SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"CargoPosition");
@@ -74,10 +75,6 @@ Model Main_AIMMS_Scheduling {
                 rowRangeStr := formatString("A2:A%i",numRows);
                 dataRangeStr := formatString("N2:N%i", numRows);
                 SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ETDTargetOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
-                
-                !rowRangeStr := formatString("A2:A%i",numRows);
-                !dataRangeStr := formatString("N2:N%i", numRows);
-                !SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ETDTargetOfCargoPositionWithTime, DataRange:dataRangeStr, RowsRange:rowRangeStr);
                 
                 rowRangeStr := formatString("A2:A%i",numRows);
                 dataRangeStr := formatString("M2:M%i", numRows);
@@ -131,108 +128,102 @@ Model Main_AIMMS_Scheduling {
                 axll::CloseAllWorkBooks;
                 axll::OpenWorkBook(WorkbookFilename : P_FileName );
                 axll::SelectSheet(SheetName : "Vessel" );
+                
+                numRows := val(Last(S_AllVessel));
+                
                 axll::ReadRawValues(
-                	IdentifierReference   : P_TypeOfVessel,
-                	DataRange             : "E2:E71",
+                	IdentifierReference   : P_NameOfAllVessel,
+                	DataRange             : "A2:A" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);
                 
                 axll::ReadRawValues(
-                	IdentifierReference   : P_NameOfVessel,
-                	DataRange             : "B2:B71",
+                	IdentifierReference   : P_TypeOfVessel,
+                	DataRange             : "D2:D" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);
                 
                 axll::ReadRawValues(
                 	IdentifierReference   : P_DWTOfVessel,
-                	DataRange             : "F2:F71",
+                	DataRange             : "E2:E" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);
                 
                 axll::ReadRawValues(
                 	IdentifierReference   : P_TPCOfVessel,
-                	DataRange             : "I2:I71",
+                	DataRange             : "H2:H" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);
                 
                 axll::ReadRawValues(
                 	IdentifierReference   : P_DraftOfVessel,
-                	DataRange             : "H2:H71",
+                	DataRange             : "G2:G" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);
                 
                 axll::ReadRawValues(
                 	IdentifierReference   : P_TCEOfVessel,
-                	DataRange             : "D2:D71",
+                	DataRange             : "C2:C" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);
                 
                 axll::ReadRawValues(
                 	IdentifierReference   : P_LadenSpeedOfVessel,
-                	DataRange             : "L2:L71",
+                	DataRange             : "K2:K" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);
                 
                 axll::ReadRawValues(
                 	IdentifierReference   : P_BallastSpeedOfVessel,
-                	DataRange             : "J2:J71",
+                	DataRange             : "I2:I" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);	
                 
                 axll::ReadRawValues(
                 	IdentifierReference   : P_LadenBunkerConsumptionRateOfVessel,
-                	DataRange             : "M2:M71",
+                	DataRange             : "L2:L" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);	
                 
                 axll::ReadRawValues(
                 	IdentifierReference   : P_BallastBunkerConsumptionRateOfVessel,
-                	DataRange             : "K2:K71",
+                	DataRange             : "J2:J" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);	
                 
                 axll::ReadRawValues(
                 	IdentifierReference   : P_ScaleOfVessel,
-                	DataRange             : "G2:G71",
+                	DataRange             : "F2:F" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);		
                 
                 axll::ReadRawValues(
                 	IdentifierReference   : P_ESSCapabilityOfVessel,
-                	DataRange             : "N2:N71",
+                	DataRange             : "M2:M" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);
                 
-                axll::CloseAllWorkBooks;
-                
-                ! Read P_ETDTargetOfCargoPositionWithTime
-                axll::OpenWorkBook(WorkbookFilename : P_FileName );
-                axll::SelectSheet(SheetName : "CargoPosition" );
-                axll::ReadRawValues(
-                	IdentifierReference   : P_ETDTargetOfCargoPositionWithTime,
-                	DataRange             : "N2:N1000",
-                	MergeWithExistingData :  0);
                 axll::CloseAllWorkBooks;
             }
             StringParameter P_FileName;
             Parameter numRows;
-            Parameter numColumns;
             StringParameter dataRangeStr;
             StringParameter rowRangeStr;
             StringParameter columnRangeStr;
         }
         DeclarationSection Raw_Input_Data {
-            StringParameter P_ETDTargetOfCargoPositionWithTime {
-                IndexDomain: cap;
-            }
             Parameter P_PortVesselCategoryCompatibility {
                 IndexDomain: (po,vc);
                 Range: binary;
             }
+            Set S_AllVessel {
+                Index: allve;
+                Definition: elementrange(1,500,1);
+            }
+            StringParameter P_NameOfAllVessel {
+                IndexDomain: allve;
+            }
             Set S_VesselCategory {
                 Index: vc;
             }
-            Set P_SNForTide {
+            Set S_SNOfTide {
                 Index: snt;
                 Definition: Data{1, 2};
             }
             StringParameter P_TimeOfTide {
-                IndexDomain: (dt,snt,po);
+                IndexDomain: (ddt,snt,po);
             }
             Parameter P_ValueOfTide {
-                IndexDomain: (dt,snt,po);
+                IndexDomain: (ddt,snt,po);
                 Unit: m;
-            }
-            StringParameter P_TimeFormat {
-                Definition: "%c%y-%m-%d %H%M%S";
             }
         }
         Procedure Prepocess {
@@ -240,11 +231,13 @@ Model Main_AIMMS_Scheduling {
                 empty Processed_Data;
                 empty Derived_Sets_and_Parameters;
                 
-                !Dummy input data
-                P_CurrentPortETDOfVessel(ve) := '2018-09-01';
+                !Generate dummy input data
+                P_CurrentPortETDOfVessel(ve) := '2018-09-01 00:00:00';
                 P_BallastSpeedOfVessel(ve | P_BallastSpeedOfVessel(ve) <= 0[nm/hour]) := 12[nm/hour];
                 P_OtherWeightOfVessel(ve) := 100[ton];
                 
+                
+                !Populate Assigned Discharge Port Of Cargo Position dataset to Possible Discharge Port Of Cargo Position dataset
                 P_SNOfPossibleDischargePort := First(sn);
                 for (cap | P_AssignedDischargePortOfCargoPosition(cap) <> '') do
                 	P_PossibleDischargePortOfCargoPosition(cap, P_SNOfPossibleDischargePort) := P_AssignedDischargePortOfCargoPosition(cap);
@@ -252,13 +245,13 @@ Model Main_AIMMS_Scheduling {
                 	P_TTIPDischargePortOfCargoPosition(cap, P_SNOfPossibleDischargePort) := P_TTIPAssignedDischargePortOfCargoPosition(cap);
                 endfor;
                 
-                !Default value
-                P_CargoPositionVesselCompatibility(cap, ve) := 1;
+                !Calculate derived sets and parameters
+                P_CargoPositionVesselCompatibility(cap, ve) := 1; !Default value
                 
                 for (cap, ve) do
                 	P_TimeFromCurrentPortToLoadingPort := (P_Distance(P_CurrentPortOfVessel(ve), P_LoadingPortOfCargoPosition(cap)) / P_BallastSpeedOfVessel(ve)) * (1 + P_SeaFactor);
                 	P_VesselETA(cap, ve) := MomentToTimeSlot(
-                					S_CalendarDate, ! (input) a calendar
+                					S_HourlyCalendar, ! (input) a calendar
                 					P_CurrentPortETDOfVessel(ve), ! (input) an element (time-slot) in the calendar
                 					P_TimeFromCurrentPortToLoadingPort ! (input) a numerical value
                 				);
@@ -296,22 +289,18 @@ Model Main_AIMMS_Scheduling {
                 endfor;
                 P_PortVesselCompatibility(po, ve) := P_PortVesselCategoryCompatibility(po, P_CategoryOfVessel(ve));
                 
-                !empty P_LoadingPortSailingDraftOnETD, P_Temp1, P_Temp2;
+                !empty P_LoadingPortSailingDraftOnETD, P_TimeDifference, P_MinTimeDifference;
                 for (cap) do
-                	for ((dt, snt, po) | dt = P_ETDTargetOfCargoPosition(cap) and po = P_LoadingPortOfCargoPosition(cap)) do
-                		if P_TimeOfTide(dt, snt, po) <> "" then
-                			P_Temp1 := StringToMoment(
-                				P_TimeFormat,
-                				[day],
-                				P_ETDTargetOfCargoPositionWithTime(cap),
-                				dt + " " + P_TimeOfTide(dt, snt, po) + "00"
-                			);
-                			if snt = First(P_SNForTide) then
-                				P_Temp2 := abs(P_Temp1);
-                				P_LoadingPortSailingDraftOnETD(cap) := P_ValueOfTide(dt, snt, po);
-                			elseif  abs(P_Temp1) < P_Temp2 then
-                				P_Temp2 := abs(P_Temp1);
-                				P_LoadingPortSailingDraftOnETD(cap) := P_ValueOfTide(dt, snt, po);
+                	P_MinHourDifference := -1; !initialization
+                	for ((ddt, snt, po) | ddt = S_HourlyToDaily(P_ETDTargetOfCargoPosition(cap)) and po = P_LoadingPortOfCargoPosition(cap)) do
+                		if P_TimeOfTide(ddt, snt, po) <> "" then
+                			P_HourDifference := abs(TimeSlotCharacteristic(P_ETDTargetOfCargoPosition(cap), 'hour') - Floor(val(P_TimeOfTide(ddt, snt, po))/100));
+                			if P_MinHourDifference = -1 then
+                				P_MinHourDifference := P_HourDifference;
+                				P_LoadingPortSailingDraftOnETD(cap) := P_ValueOfTide(ddt, snt, po);
+                			elseif P_HourDifference < P_MinHourDifference then
+                				P_MinHourDifference := P_HourDifference;
+                				P_LoadingPortSailingDraftOnETD(cap) := P_ValueOfTide(ddt, snt, po);
                 			endif;
                 		endif;
                 	endfor;
@@ -343,7 +332,7 @@ Model Main_AIMMS_Scheduling {
                 for ((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) do
                 	P_TurnTime := 0.5[day];
                 	P_LaycanStartDateOfCargoPositionMinusHalfDay := MomentToTimeSlot(
-                								S_CalendarDate, ! (input) a calendar
+                								S_HourlyCalendar, ! (input) a calendar
                 								P_LaycanStartDateOfCargoPosition(cap), ! (input) an element (time-slot) in the calendar
                 								-0.5[day] ! (input) a numerical value
                 							);
@@ -434,12 +423,8 @@ Model Main_AIMMS_Scheduling {
                 IndexDomain: cap;
                 Unit: m;
             }
-            Parameter P_Temp1 {
-                Unit: day;
-            }
-            Parameter P_Temp2 {
-                Unit: day;
-            }
+            Parameter P_HourDifference;
+            Parameter P_MinHourDifference;
             Parameter P_VesselAllowedDraft {
                 Unit: m;
             }
@@ -478,7 +463,7 @@ Model Main_AIMMS_Scheduling {
                 Unit: day;
             }
             ElementParameter P_LaycanStartDateOfCargoPositionMinusHalfDay {
-                Range: S_CalendarDate;
+                Range: S_HourlyCalendar;
             }
             Parameter P_AllowedTime {
                 Unit: day;
@@ -520,26 +505,25 @@ Model Main_AIMMS_Scheduling {
             DeclarationSection TestData {
                 Parameter hour_test {
                     Unit: hour;
-                    Definition: 11;
                 }
                 Parameter test {
-                    Unit: day;
-                    Definition: {
-                        abs(First(S_CalendarDate) - '2018-09-01');
-                    }
+                    Definition: val(Last(S_AllVessel));
                 }
                 Parameter test2 {
                     Range: binary;
-                    Definition: First(S_CalendarDate) + 100[day] > '2018-02-01' - 3[day];
+                    Definition: First(S_HourlyCalendar) + 100[day] > '2018-02-01' - 3[day];
                 }
                 StringParameter test3 {
                     Definition: {
                         MomentToTimeSlot(
-                        S_CalendarDate, ! (input) a calendar
-                        First(S_CalendarDate) + 3[day], ! (input) an element (time-slot) in the calendar
+                        S_HourlyCalendar, ! (input) a calendar
+                        First(S_HourlyCalendar) + 3[day], ! (input) an element (time-slot) in the calendar
                         -0.4[day] ! (input) a numerical value
                         )
                     }
+                }
+                StringParameter test4 {
+                    Definition: "B1:B" + formatString("%i", 200);
                 }
                 Parameter P_Sample1;
             }
@@ -548,27 +532,44 @@ Model Main_AIMMS_Scheduling {
     Section Optimization_Model {
         Section Model_Inputs {
             DeclarationSection Calendar_Date {
-                Calendar S_CalendarDate {
+                Calendar S_HourlyCalendar {
                     Index: dt;
+                    Unit: hour;
+                    BeginDate: S_BeginOfHourlyCalendar;
+                    EndDate: S_EndOfHourlyCalendar;
+                    TimeslotFormat: "%c%y-%m-%d %H:%M:%S";
+                }
+                StringParameter S_BeginOfHourlyCalendar {
+                    Definition: "2018-08-01 00:00:00";
+                }
+                StringParameter S_EndOfHourlyCalendar {
+                    Definition: "2018-10-31 23:00:00";
+                }
+                Calendar S_DailyCalendar {
+                    Index: ddt;
                     Unit: day;
-                    BeginDate: S_BeginDateOfCalendar;
-                    EndDate: S_EndDateOfCalendar;
+                    BeginDate: S_BeginOfDailyCalendar;
+                    EndDate: S_EndOfDailyCalendar;
                     TimeslotFormat: "%c%y-%m-%d";
                 }
-                StringParameter S_BeginDateOfCalendar {
+                StringParameter S_BeginOfDailyCalendar {
                     Definition: "2018-01-01";
                 }
-                StringParameter S_EndDateOfCalendar {
-                    Definition: "2019-12-31";
+                StringParameter S_EndOfDailyCalendar {
+                    Definition: "2018-12-31";
+                }
+                ElementParameter S_HourlyToDaily {
+                    IndexDomain: dt;
+                    Range: S_DailyCalendar;
+                    Definition: first(ddt | TimeslotCharacteristic(ddt, 'year') = TimeslotCharacteristic(dt, 'year') and TimeslotCharacteristic(ddt, 'month') = TimeslotCharacteristic(dt, 'month') and TimeslotCharacteristic(ddt, 'monthday') = TimeslotCharacteristic(dt, 'monthday'));
                 }
             }
             DeclarationSection Quantities_and_Units {
                 Quantity SI_Time_Duration {
-                    BaseUnit: day;
+                    BaseUnit: hour;
                     Conversions: {
-                        second->day : #-># * 1.157407407e-5,
-                        minute->day : #-># / 1440,
-                        hour  ->day : #-># / 24
+                        day   ->hour : #-># * 24,
+                        minute->hour : #-># / 60
                     }
                     Comment: "Expresses the value for the duration of periods.";
                 }
@@ -600,7 +601,11 @@ Model Main_AIMMS_Scheduling {
                         Index: cap;
                     }
                     Set S_Vessel {
+                        SubsetOf: S_AllVessel;
                         Index: ve;
+                        Definition: {
+                            {allve | P_NameOfAllVessel(allve) <> ""} !remove dummy vessel which does not have a name
+                        }
                     }
                     Set S_VesselType {
                         Index: vt;
@@ -632,53 +637,57 @@ Model Main_AIMMS_Scheduling {
                     }
                     Parameter P_FreightRate {
                         IndexDomain: cap;
+                        Range: nonnegative;
                         Unit: $/ton;
                     }
                     ElementParameter P_LaycanStartDateOfCargoPosition {
                         IndexDomain: cap;
-                        Range: S_CalendarDate;
+                        Range: S_HourlyCalendar;
                     }
                     ElementParameter P_LaycanEndDateOfCargoPosition {
                         IndexDomain: cap;
-                        Range: S_CalendarDate;
+                        Range: S_HourlyCalendar;
                     }
                     ElementParameter P_ETATargetOfCargoPosition {
                         IndexDomain: cap;
-                        Range: S_CalendarDate;
+                        Range: S_HourlyCalendar;
                     }
                     Parameter P_ETABufferBeforeOfCargoPosition {
                         IndexDomain: cap;
-                        Range: integer;
+                        Range: nonnegative;
                         Unit: day;
                     }
                     Parameter P_ETABufferAfterOfCargoPosition {
                         IndexDomain: cap;
-                        Range: integer;
+                        Range: nonnegative;
                         Unit: day;
                     }
                     ElementParameter P_ETBTargetOfCargoPosition {
                         IndexDomain: cap;
-                        Range: S_CalendarDate;
+                        Range: S_HourlyCalendar;
                     }
                     Parameter P_ETBBufferBeforeOfCargoPosition {
                         IndexDomain: cap;
-                        Range: integer;
+                        Range: nonnegative;
                         Unit: day;
                     }
                     ElementParameter P_ETDTargetOfCargoPosition {
                         IndexDomain: cap;
-                        Range: S_CalendarDate;
+                        Range: S_HourlyCalendar;
                     }
                     Parameter P_CargoStemSizeOfCargoPosition {
                         IndexDomain: cap;
+                        Range: nonnegative;
                         Unit: kton;
                     }
                     Parameter P_CargoStemSizeUpVariationPercentage {
                         IndexDomain: cap;
+                        Range: nonnegative;
                         Unit: %;
                     }
                     Parameter P_CargoStemSizeDownVariationPercentage {
                         IndexDomain: cap;
+                        Range: nonnegative;
                         Unit: %;
                     }
                     StringParameter P_CargoTierOfCargoPostion {
@@ -694,6 +703,7 @@ Model Main_AIMMS_Scheduling {
                     }
                     Parameter P_TTIPAssignedDischargePortOfCargoPosition {
                         IndexDomain: cap;
+                        Range: nonnegative;
                         Unit: day;
                     }
                     ElementParameter P_PossibleDischargePortOfCargoPosition {
@@ -702,10 +712,12 @@ Model Main_AIMMS_Scheduling {
                     }
                     Parameter P_ProbabilityDischargePortOfCargoPosition {
                         IndexDomain: (cap,sn);
+                        Range: nonnegative;
                         Unit: %;
                     }
                     Parameter P_TTIPDischargePortOfCargoPosition {
                         IndexDomain: (cap,sn);
+                        Range: nonnegative;
                         Unit: day;
                     }
                     Parameter P_RequireESSOfCargoPosition {
@@ -726,29 +738,36 @@ Model Main_AIMMS_Scheduling {
                     }
                     StringParameter P_NameOfVessel {
                         IndexDomain: ve;
+                        Definition: P_NameOfAllVessel(ve);
                     }
                     Parameter P_DWTOfVessel {
                         IndexDomain: ve;
+                        Range: nonnegative;
                         Unit: ton;
                     }
                     Parameter P_TPCOfVessel {
                         IndexDomain: ve;
+                        Range: nonnegative;
                         Unit: ton/cm;
                     }
                     Parameter P_DraftOfVessel {
                         IndexDomain: ve;
+                        Range: nonnegative;
                         Unit: m;
                     }
                     Parameter P_TCEOfVessel {
                         IndexDomain: ve | (P_TypeOfVessel(ve) = "OV" OR P_TypeOfVessel(ve) = "TC");
+                        Range: nonnegative;
                         Unit: $/day;
                     }
                     Parameter P_DemurrageRate {
                         IndexDomain: ve;
+                        Range: nonnegative;
                         Unit: $/day;
                     }
                     Parameter P_VesselFreightCostRate {
                         IndexDomain: ve | (P_TypeOfVessel(ve) = "VC" OR P_TypeOfVessel(ve) = "COA" OR P_TypeOfVessel(ve) = "CVC");
+                        Range: nonnegative;
                         Unit: $/ton;
                     }
                     ElementParameter P_CurrentPortOfVessel {
@@ -757,30 +776,36 @@ Model Main_AIMMS_Scheduling {
                     }
                     ElementParameter P_CurrentPortETDOfVessel {
                         IndexDomain: ve;
-                        Range: S_CalendarDate;
+                        Range: S_HourlyCalendar;
                     }
                     Parameter P_LadenSpeedOfVessel {
                         IndexDomain: ve;
+                        Range: nonnegative;
                         Unit: nm/hour;
                     }
                     Parameter P_BallastSpeedOfVessel {
                         IndexDomain: ve;
+                        Range: nonnegative;
                         Unit: nm/hour;
                     }
                     Parameter P_LadenBunkerConsumptionRateOfVessel {
                         IndexDomain: ve;
+                        Range: nonnegative;
                         Unit: ton/day;
                     }
                     Parameter P_BallastBunkerConsumptionRateOfVessel {
                         IndexDomain: ve;
+                        Range: nonnegative;
                         Unit: ton/day;
                     }
                     Parameter P_PortBunkerConsumptionRateOfVessel {
                         IndexDomain: ve;
+                        Range: nonnegative;
                         Unit: ton/day;
                     }
                     Parameter P_ScaleOfVessel {
                         IndexDomain: ve;
+                        Range: nonnegative;
                         Unit: ton/day;
                     }
                     Parameter P_ESSCapabilityOfVessel {
@@ -789,18 +814,20 @@ Model Main_AIMMS_Scheduling {
                     }
                     Parameter P_OtherWeightOfVessel {
                         IndexDomain: ve;
+                        Range: nonnegative;
                         Unit: ton;
                     }
                     ElementParameter P_OwnerLaycanStartDate {
                         IndexDomain: (cap,ve);
-                        Range: S_CalendarDate;
+                        Range: S_HourlyCalendar;
                     }
                     ElementParameter P_OwnerLaycanEndDate {
                         IndexDomain: (cap,ve);
-                        Range: S_CalendarDate;
+                        Range: S_HourlyCalendar;
                     }
                     Parameter P_Distance {
                         IndexDomain: (po1,po2);
+                        Range: nonnegative;
                         Unit: nm;
                     }
                     Parameter P_SeaFactor {
@@ -816,7 +843,7 @@ Model Main_AIMMS_Scheduling {
                 }
                 ElementParameter P_VesselETA {
                     IndexDomain: (cap,ve);
-                    Range: S_CalendarDate;
+                    Range: S_HourlyCalendar;
                 }
                 Parameter P_TTIPLoadingPort {
                     IndexDomain: (cap,ve);
@@ -908,8 +935,36 @@ Model Main_AIMMS_Scheduling {
                 }
             }
         }
-        Section Model_Decision_Variables;
-        Section Model_Constraints;
+        Section Model_Decision_Variables {
+            DeclarationSection Decision_Variables {
+                Variable V_Assignment {
+                    IndexDomain: (cap,ve);
+                    Range: binary;
+                }
+            }
+        }
+        Section Model_Constraints {
+            Constraint FixedVessel {
+                IndexDomain: (cap)| P_FixedVesselOfCargoPosition(cap) <> '';
+                Definition: V_Assignment(cap, P_FixedVesselOfCargoPosition(cap)) = 1;
+            }
+            Constraint CargoPositionVesselCompatibility {
+                IndexDomain: (cap,ve) | P_CargoPositionVesselCompatibility(cap, ve) = 0;
+                Definition: V_Assignment(cap, ve) = 0;
+            }
+            Constraint PortVesselCompatibility {
+                IndexDomain: (cap,ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and sum(sn, P_PortVesselCompatibility(P_PossibleDischargePortOfCargoPosition(cap, sn), ve)) = 0;
+                Definition: V_Assignment(cap, ve) = 0;
+            }
+            Constraint OneCargoPositionToOneVessel {
+                IndexDomain: cap;
+                Definition: sum(ve | P_CargoPositionVesselCompatibility(cap, ve) = 1, V_Assignment(cap, ve)) <= 1;
+            }
+            Constraint CargoPositionESSRequirement {
+                IndexDomain: (cap,ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and P_RequireESSOfCargoPosition(cap) = 1 and P_ESSCapabilityOfVessel(ve) = 0;
+                Definition: V_Assignment(cap, ve) = 0;
+            }
+        }
         Section Model_Objectives;
     }
     Section Results;
