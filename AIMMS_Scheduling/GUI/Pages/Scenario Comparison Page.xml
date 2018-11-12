@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<Page Version="4000" TimeStamp="2018-11-11 13:14:22" NeedsCompiledModel="false">
+	<PageEditSize Type="Inherited" />
+	<ProjectUUID>20A64307-D37A-4636-9D0C-B75FF96EC84A</ProjectUUID>
+	<TemplatesTabOrderPosition>1</TemplatesTabOrderPosition>
+	<Background Inherited="true" />
+	<PageObject Type="Rectangle">
+		<Location top="234" left="138" bottom="282" right="162" />
+		<FillColor>
+			<UserColor GUID="4C29CF98-3E51-4BAA-8563-90FCE3E3DF3B">default background</UserColor>
+		</FillColor>
+		<LineColor>
+			<UserColor GUID="4C29CF98-3E51-4BAA-8563-90FCE3E3DF3B">default background</UserColor>
+		</LineColor>
+	</PageObject>
+	<UsedReferences>
+		<Model />
+	</UsedReferences>
+</Page>

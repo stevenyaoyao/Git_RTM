@@ -1,16 +1,28 @@
-Warning at line 6606.
+Warning at line 6792.
 The units of ':=' are not commensurate. The unit analysis results in '[day] := []'.
-Warning at line 6606.
-The units of ':=' are not commensurate. The unit analysis results in '[] := [1/day]'.
-Warning at line 6606.
-The units of ':=' are not commensurate. The unit analysis results in '[] := [1/day]'.
-Warning at line 6606.
-The units of ':=' are not commensurate. The unit analysis results in '[] := [1/day]'.
-Warning at line 6606.
-The units of ':=' are not commensurate. The unit analysis results in '[] := [1/day]'.
+Warning at line 6792.
+The units of ':=' are not commensurate. The unit analysis results in '[day] := []'.
+Warning at line 6792.
+The units of ':=' are not commensurate. The unit analysis results in '[day] := []'.
+Warning at line 6792.
+The units of ':=' are not commensurate. The unit analysis results in '[day] := []'.
+Warning at line 6792.
+The units of ':=' are not commensurate. The unit analysis results in '[day] := []'.
 Input/output error at line 2 in user-defined function section "webui::PROIsInitialized", column 3.
 The user function library \x64\AimmsPROClient.dll cannot be found.
 Input/output error at line 2 in user-defined function section "webui::PROIsInitialized", column 3.
+The library \x64\AimmsPROClient.dll has not been loaded because: Error loading library : The parameter is incorrect.
+Execution error at line 2 in user-defined function section "webui::PROIsInitialized".
+The dll for external procedure "pro::management::IsInitialized" has not been found.
+Input/output error at line 2 in user-defined function section "webui::PROIsInitialized", column 62.
+The user function library \x64\AimmsPROClient.dll cannot be found.
+Input/output error at line 2 in user-defined function section "webui::PROIsInitialized", column 62.
+The library \x64\AimmsPROClient.dll has not been loaded because: Error loading library : The parameter is incorrect.
+Execution error at line 2 in user-defined function section "webui::PROIsInitialized".
+The dll for external procedure "pro::management::IsInitialized" has not been found.
+Input/output error at line 2 in user-defined function section "webui::PROIsInitialized", column 62.
+The user function library \x64\AimmsPROClient.dll cannot be found.
+Input/output error at line 2 in user-defined function section "webui::PROIsInitialized", column 62.
 The library \x64\AimmsPROClient.dll has not been loaded because: Error loading library : The parameter is incorrect.
 Execution error at line 2 in user-defined function section "webui::PROIsInitialized".
 The dll for external procedure "pro::management::IsInitialized" has not been found.
@@ -39,7 +51,24 @@ The library \x64\AimmsPROClient.dll has not been loaded because: Error loading l
 Execution error at line 2 in user-defined function section "webui::PROIsInitialized".
 The dll for external procedure "pro::management::IsInitialized" has not been found.
 A DataChangeMonitor with ID DataChangeMonitor001 does not exist.
-Warning: The parameter "P_Sample1" is not initialized (default values are used).
+ReadRawValues : Cell D72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell E72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell H72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell G72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell C72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell K72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell I72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell L72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell J72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell F72 in Vessel: To many values for the underlying set.
+Warning at line 1 in user-defined function section "SolveModel".
+The rows "C_PortVesselCompatibility(182853,011)" and "C_CargoPositionESSRequirement(182853,011)" are equal in the generated mathematical program "M_MathModel".  This may lead to non-unique shadow prices.  For more information regarding potential causes and consequences, see the help associated with the option "Warning_duplicate_row".
+Warning at line 1 in user-defined function section "SolveModel".
+The rows "C_PortVesselCompatibility(182853,041)" and "C_CargoPositionESSRequirement(182853,041)" are equal in the generated mathematical program "M_MathModel".  This may lead to non-unique shadow prices.  For more information regarding potential causes and consequences, see the help associated with the option "Warning_duplicate_row".
+Warning at line 1 in user-defined function section "SolveModel".
+The rows "C_PortVesselCompatibility(182853,061)" and "C_CargoPositionESSRequirement(182853,061)" are equal in the generated mathematical program "M_MathModel".  This may lead to non-unique shadow prices.  For more information regarding potential causes and consequences, see the help associated with the option "Warning_duplicate_row".
+Warning at line 1 in user-defined function section "SolveModel".
+Only 3 out of 53 duplicate row warnings were reported.  See also option limit_reported_duplicate_column_row_warnings.
 Input/output error at line 7 in user-defined function section "pro::LibraryTermination", column 7.
 The user function library \x64\AimmsPROClient.dll cannot be found.
 Input/output error at line 7 in user-defined function section "pro::LibraryTermination", column 7.

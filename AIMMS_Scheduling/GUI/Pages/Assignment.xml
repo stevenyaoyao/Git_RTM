@@ -1,17 +1,31 @@
 <?xml version="1.0"?>
-<Page Version="4000" TimeStamp="2018-10-20 07:34:45">
+<Page Version="4000" TimeStamp="2018-11-11 13:14:22">
 	<PageEditSize Type="Inherited" />
 	<ProjectUUID>20A64307-D37A-4636-9D0C-B75FF96EC84A</ProjectUUID>
 	<TemplatesTabOrderPosition>1</TemplatesTabOrderPosition>
 	<Background Inherited="true" />
 	<PageObject Type="Pivot Table">
-		<Location top="132" left="294" bottom="192" right="546" />
-		<ObjectUUID>5954E9A7-6EDA-45F0-9E3F-716068AF5E45</ObjectUUID>
+		<Location top="6" left="6" bottom="540" right="1152" />
+		<TabOrder>1</TabOrder>
+		<ObjectUUID>E91DDDB3-3A83-4F5C-87DC-B54232B593C9</ObjectUUID>
 		<Font GUID="00000000-0000-0000-0000-000000000001" Name="Main Font" />
 		<Border Style="InShadow" Width="2" MarginTop="5" MarginRight="5" MarginBottom="5" MarginLeft="5" />
 		<Contents>
 			<Explicit_Identifier>
-				<Identifier ID="4110">guilib::P_UISampple1</Identifier>
+				<Identifier ID="4110">P_CustomerOfCargoPosition( cap )</Identifier>
+				<Title ID="4120">"Customer"</Title>
+			</Explicit_Identifier>
+			<Explicit_Identifier>
+				<Identifier ID="4110">P_StatusOfCargoPosition( cap )</Identifier>
+				<Title ID="4120">"Status"</Title>
+			</Explicit_Identifier>
+			<Explicit_Identifier>
+				<Identifier ID="4110">P_NameOfFinalAssignedVessel( cap )</Identifier>
+				<Title ID="4120">"Vessel"</Title>
+			</Explicit_Identifier>
+			<Explicit_Identifier>
+				<Identifier ID="4110">P_TypeOfFinalAssignedVessel( cap )</Identifier>
+				<Title ID="4120">"Vessel Type"</Title>
 			</Explicit_Identifier>
 		</Contents>
 		<Indices>
@@ -54,7 +68,11 @@
 	</PageObject>
 	<UsedReferences>
 		<Model>
-			<Symbol>guilib::P_UISampple1</Symbol>
+			<Symbol>P_StatusOfCargoPosition</Symbol>
+			<Symbol>P_CustomerOfCargoPosition</Symbol>
+			<Symbol>P_NameOfFinalAssignedVessel</Symbol>
+			<Symbol>cap</Symbol>
+			<Symbol>P_TypeOfFinalAssignedVessel</Symbol>
 		</Model>
 	</UsedReferences>
 </Page>

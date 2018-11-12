@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 <TemplateManager>
-	<Template Name="Template 1" PageGUID="59572F03-964E-4CAD-BDC9-DD9D768C2E1D">
-		<Page Name="Page 1" PageGUID="C4CBF90C-6897-4246-BC0B-AB8C5319B61C" />
+	<Template Name="ControlButtons" PageGUID="59572F03-964E-4CAD-BDC9-DD9D768C2E1D">
+		<Page Name="Input Data Page" PageGUID="C4CBF90C-6897-4246-BC0B-AB8C5319B61C" />
+		<Page Name="Result Page" PageGUID="E9BC948B-E00A-4EE5-BF3C-0A5C424107DC" />
+		<Page Name="Scenario Comparison Page" PageGUID="8080FE2E-7269-423F-AE9A-7265AFCA087F" />
 	</Template>
+	<Template Name="Backup" PageGUID="E380EAFF-B550-4F49-9E74-EE31D6D9BAD4" />
+	<Page Name="Cargo Position Data" PageGUID="EC736218-3861-4B42-A33B-EA2EE65B6A8E" />
+	<Page Name="Vessel Data" PageGUID="0597EA03-EEF7-49A9-914F-BC5E99DF6BFB" />
+	<Page Name="Assignment" PageGUID="D77F4158-C144-49A1-86DA-002B9FC50B7D" />
 </TemplateManager>

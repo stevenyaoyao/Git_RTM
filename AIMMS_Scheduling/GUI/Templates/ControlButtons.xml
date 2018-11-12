@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<Page Version="4000" TimeStamp="2018-11-10 16:07:30" NeedsCompiledModel="false">
+	<PageEditSize Type="Inherited" />
+	<ProjectUUID>20A64307-D37A-4636-9D0C-B75FF96EC84A</ProjectUUID>
+	<TemplatesTabOrderPosition>1</TemplatesTabOrderPosition>
+	<Background Inherited="true" />
+	<PageObject Type="Button">
+		<Location top="84" left="18" bottom="126" right="138" />
+		<TabOrder>3</TabOrder>
+		<LeaveOnEnter>false</LeaveOnEnter>
+		<ButtonType>Text</ButtonType>
+		<Title>"Input Data"</Title>
+		<BackgroundColor RGB="#00ffff" />
+		<ForegroundColor RGB="#0000ff" />
+		<Font GUID="1D47E2B7-A8FC-4081-B0F9-465228BAE46D" Name="Menu1" />
+		<ActionSequence>
+			<Action Type="LinkedPage">
+				<Page PageGUID="C4CBF90C-6897-4246-BC0B-AB8C5319B61C" Name="Input Data Page" />
+			</Action>
+		</ActionSequence>
+	</PageObject>
+	<PageObject Type="Button">
+		<Location top="162" left="18" bottom="204" right="138" />
+		<TabOrder>1</TabOrder>
+		<LeaveOnEnter>false</LeaveOnEnter>
+		<ButtonType>Text</ButtonType>
+		<Title>"Result"</Title>
+		<BackgroundColor RGB="#00ffff" />
+		<ForegroundColor RGB="#0000ff" />
+		<Font GUID="1D47E2B7-A8FC-4081-B0F9-465228BAE46D" Name="Menu1" />
+		<ActionSequence>
+			<Action Type="LinkedPage">
+				<Page PageGUID="E9BC948B-E00A-4EE5-BF3C-0A5C424107DC" Name="Result Page" />
+			</Action>
+		</ActionSequence>
+	</PageObject>
+	<PageObject Type="Button">
+		<Location top="234" left="18" bottom="282" right="138" />
+		<TabOrder>2</TabOrder>
+		<LeaveOnEnter>false</LeaveOnEnter>
+		<ButtonType>Text</ButtonType>
+		<Title>"Scenario Comparison"</Title>
+		<BackgroundColor RGB="#00ffff" />
+		<ForegroundColor RGB="#0000ff" />
+		<Font GUID="1D47E2B7-A8FC-4081-B0F9-465228BAE46D" Name="Menu1" />
+		<ActionSequence>
+			<Action Type="LinkedPage">
+				<Page PageGUID="8080FE2E-7269-423F-AE9A-7265AFCA087F" Name="Scenario Comparison Page" />
+			</Action>
+		</ActionSequence>
+	</PageObject>
+	<PageObject Type="Rectangle">
+		<Location top="0" left="0" bottom="768" right="156" />
+		<FillColor RGB="#ffffff" />
+		<LineColor RGB="#ffffff" />
+	</PageObject>
+	<UsedReferences>
+		<Model />
+	</UsedReferences>
+</Page>

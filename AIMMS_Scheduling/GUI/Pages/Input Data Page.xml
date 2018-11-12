@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<Page Version="4000" TimeStamp="2018-11-11 13:14:22">
+	<PageEditSize Type="Inherited" />
+	<ProjectUUID>20A64307-D37A-4636-9D0C-B75FF96EC84A</ProjectUUID>
+	<TemplatesTabOrderPosition>1</TemplatesTabOrderPosition>
+	<Background Inherited="true" />
+	<PageObject Type="Tabbed Page Object">
+		<Location top="54" left="186" bottom="582" right="1356" />
+		<TabOrder>2</TabOrder>
+		<PrintingOccurrence>Never</PrintingOccurrence>
+		<Font GUID="00000000-0000-0000-0000-000000000001" Name="Main Font" />
+		<MultipleTabRows>true</MultipleTabRows>
+	</PageObject>
+	<PageObject Type="Button">
+		<Location top="6" left="186" bottom="42" right="306" />
+		<TabOrder>3</TabOrder>
+		<LeaveOnEnter>false</LeaveOnEnter>
+		<ButtonType>Text</ButtonType>
+		<Title>"Load Data"</Title>
+		<BackgroundColor RGB="#00ffff" />
+		<ForegroundColor RGB="#0000ff" />
+		<Font GUID="1D47E2B7-A8FC-4081-B0F9-465228BAE46D" Name="Menu1" />
+		<ActionSequence>
+			<Action Type="Run">
+				<RunWhat>SpecificProcecure</RunWhat>
+				<Procedure>ReadInput</Procedure>
+				<AbortOnError>true</AbortOnError>
+			</Action>
+			<Action Type="Run">
+				<RunWhat>SpecificProcecure</RunWhat>
+				<Procedure>Prepocess</Procedure>
+				<AbortOnError>true</AbortOnError>
+			</Action>
+		</ActionSequence>
+	</PageObject>
+	<PageObject Type="Rectangle">
+		<Location top="84" left="138" bottom="126" right="162" />
+		<FillColor>
+			<UserColor GUID="4C29CF98-3E51-4BAA-8563-90FCE3E3DF3B">default background</UserColor>
+		</FillColor>
+		<LineColor>
+			<UserColor GUID="4C29CF98-3E51-4BAA-8563-90FCE3E3DF3B">default background</UserColor>
+		</LineColor>
+	</PageObject>
+	<UsedReferences>
+		<Model>
+			<Symbol>ReadInput</Symbol>
+			<Symbol>Prepocess</Symbol>
+		</Model>
+	</UsedReferences>
+</Page>

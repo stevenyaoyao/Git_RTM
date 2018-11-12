@@ -1,12 +1,32 @@
 ﻿Warning: The units of ':=' are not commensurate.
 The unit analysis results in '[day] := []'.
 Warning: The units of ':=' are not commensurate.
-The unit analysis results in '[] := [1/day]'.
+The unit analysis results in '[day] := []'.
 Warning: The units of ':=' are not commensurate.
-The unit analysis results in '[] := [1/day]'.
+The unit analysis results in '[day] := []'.
 Warning: The units of ':=' are not commensurate.
-The unit analysis results in '[] := [1/day]'.
+The unit analysis results in '[day] := []'.
 Warning: The units of ':=' are not commensurate.
-The unit analysis results in '[] := [1/day]'.
-There is 73.109 Mb in use.
-Warning: The parameter "P_Sample1" is not initialized (default values are used).
+The unit analysis results in '[day] := []'.
+There is 71.309 Mb in use.
+ReadRawValues : Cell D72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell E72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell H72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell G72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell C72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell K72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell I72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell L72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell J72 in Vessel: To many values for the underlying set.
+ReadRawValues : Cell F72 in Vessel: To many values for the underlying set.
+Warning: The rows "C_PortVesselCompatibility(182853,011)" and "C_CargoPositionESSRequirement(182853,011)" are equal in the generated mathematical program "M_MathModel". 
+This may lead to non-unique shadow prices. 
+For more information regarding potential causes and consequences, see the help associated with the option "Warning_duplicate_row".
+Warning: The rows "C_PortVesselCompatibility(182853,041)" and "C_CargoPositionESSRequirement(182853,041)" are equal in the generated mathematical program "M_MathModel". 
+This may lead to non-unique shadow prices. 
+For more information regarding potential causes and consequences, see the help associated with the option "Warning_duplicate_row".
+Warning: The rows "C_PortVesselCompatibility(182853,061)" and "C_CargoPositionESSRequirement(182853,061)" are equal in the generated mathematical program "M_MathModel". 
+This may lead to non-unique shadow prices. 
+For more information regarding potential causes and consequences, see the help associated with the option "Warning_duplicate_row".
+Warning: Only 3 out of 53 duplicate row warnings were reported. 
+See also option limit_reported_duplicate_column_row_warnings.

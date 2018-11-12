@@ -4,6 +4,7 @@ Model Main_AIMMS_Scheduling {
     Section Raw_Input {
         Procedure ReadInput {
             Body: {
+                empty Raw_Input_Data;
                 empty Input_Sets_and_Parameters;
                 
                 ! Read Sets
@@ -90,7 +91,7 @@ Model Main_AIMMS_Scheduling {
                 
                 rowRangeStr := formatString("A2:A%i",numRows);
                 dataRangeStr := formatString("I2:I%i", numRows);
-                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_RequireESSOfCargoPosition, DataRange:dataRangeStr, RowsRange:rowRangeStr);
+                SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_RequireESSOfCargoPositionString, DataRange:dataRangeStr, RowsRange:rowRangeStr);
                 
                 ! Read PortDistance Data
                 SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"PortDistance");
@@ -112,15 +113,21 @@ Model Main_AIMMS_Scheduling {
                 SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"PortSailingDraft");
                 
                 numRows := 1000;
-                rowRangeStr := formatString("A3:B%i",numRows);
+                rowRangeStr := formatString("A3:B%i", numRows);
                 columnRangeStr := formatString("C2:F2");
                 dataRangeStr := formatString("C3:F%i", numRows);
                 SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_TimeOfTide, DataRange:dataRangeStr, RowsRange:rowRangeStr, ColumnsRange:columnRangeStr);
                 
-                rowRangeStr := formatString("A3:B%i",numRows);
+                rowRangeStr := formatString("A3:B%i", numRows);
                 columnRangeStr := formatString("H2:K2");
                 dataRangeStr := formatString("H3:K%i", numRows);
                 SpreadSheet::RetrieveTable(Workbook:P_FileName, Parameter:P_ValueOfTide, DataRange:dataRangeStr, RowsRange:rowRangeStr, ColumnsRange:columnRangeStr);
+                
+                SpreadSheet::SetActiveSheet(Workbook:P_FileName, Name:"ESS");
+                
+                numRows := 2500;
+                dataRangeStr := formatString("A2:A%i", numRows);
+                SpreadSheet::RetrieveSet(Workbook:P_FileName, Set:S_VesselWithESS, Range:dataRangeStr, Mode:'replace');
                 
                 Spreadsheet::CloseWorkbook(P_FileName, 0);
                 
@@ -184,11 +191,6 @@ Model Main_AIMMS_Scheduling {
                 axll::ReadRawValues(
                 	IdentifierReference   : P_ScaleOfVessel,
                 	DataRange             : "F2:F" + formatString("%i", numRows),
-                	MergeWithExistingData :  0);		
-                
-                axll::ReadRawValues(
-                	IdentifierReference   : P_ESSCapabilityOfVessel,
-                	DataRange             : "M2:M" + formatString("%i", numRows),
                 	MergeWithExistingData :  0);
                 
                 axll::CloseAllWorkBooks;
@@ -204,9 +206,15 @@ Model Main_AIMMS_Scheduling {
                 IndexDomain: (po,vc);
                 Range: binary;
             }
+            StringParameter P_RequireESSOfCargoPositionString {
+                IndexDomain: cap;
+            }
             Set S_AllVessel {
                 Index: allve;
                 Definition: elementrange(1,500,1);
+            }
+            Set S_VesselWithESS {
+                Index: veess;
             }
             StringParameter P_NameOfAllVessel {
                 IndexDomain: allve;
@@ -232,10 +240,104 @@ Model Main_AIMMS_Scheduling {
                 empty Derived_Sets_and_Parameters;
                 
                 !Generate dummy input data
-                P_CurrentPortETDOfVessel(ve) := '2018-09-01 00:00:00';
+                P_FreightRate(cap | P_FreightRate(cap) = 0[$/ton]) := 10[$/ton];
+                P_ETABufferBeforeOfCargoPosition(cap) := 2[day];
+                P_ETABufferAfterOfCargoPosition(cap) := 2[day];
+                P_ETBBufferBeforeOfCargoPosition(cap) := 2[day];
+                P_CargoStemSizeUpVariationPercentage(cap) := 10[%];
+                P_CargoStemSizeDownVariationPercentage(cap) := 10[%];
+                
+                P_AssignedDischargePortOfCargoPosition(cap | Mod(Ord(cap), 10) = 1) := 'BAOSHAN';
+                P_AssignedDischargePortOfCargoPosition(cap | Mod(Ord(cap), 10) = 5) := 'HAILI';
+                P_TTIPAssignedDischargePortOfCargoPosition(cap | Mod(Ord(cap), 10) = 1 or Mod(Ord(cap), 10) = 5) := 3[day];
+                
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 2 and sn = '01') := 'BEILUN';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 2 and sn = '02') := 'DANDONG';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 3 and sn = '01') := 'DALIAN';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 3 and sn = '02') := 'HONG KONG';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 4 and sn = '01') := 'DBCT';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 4 and sn = '02') := 'KEMEN';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 6 and sn = '01') := 'JIANGYIN';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 6 and sn = '02') := 'DANDONG';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 7 and sn = '01') := 'KURE';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 7 and sn = '02') := 'MAILIAO';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 8 and sn = '01') := 'MAJISHAN';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 8 and sn = '02') := 'HUANGPU';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 9 and sn = '01') := 'HUANGPU';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 9 and sn = '02') := 'HUANGHUA';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 0 and sn = '01') := 'KUANTAN';
+                P_PossibleDischargePortOfCargoPosition((cap, sn) | Mod(Ord(cap), 10) = 0 and sn = '02') := 'PWCS';
+                
+                P_ProbabilityDischargePortOfCargoPosition((cap, sn) | P_PossibleDischargePortOfCargoPosition(cap, sn) <> '' and Mod(Ord(cap), 10) <> 1 and Mod(Ord(cap), 10) <> 5) := 50[%];
+                P_TTIPDischargePortOfCargoPosition((cap, sn) | P_PossibleDischargePortOfCargoPosition(cap, sn) <> '' and Mod(Ord(cap), 10) <> 1 and Mod(Ord(cap), 10) <> 5) := 4[day];
+                
+                P_FixedVesselOfCargoPosition(cap | Mod(Ord(cap), 20) = 0 and round(Ord(cap)/20) = 1) := First(ve | Ord(ve) = 10);
+                P_FixedVesselOfCargoPosition(cap | Mod(Ord(cap), 20) = 0 and round(Ord(cap)/20) = 2) := First(ve | Ord(ve) = 20);
+                P_FixedVesselOfCargoPosition(cap | Mod(Ord(cap), 20) = 0 and round(Ord(cap)/20) = 3) := First(ve | Ord(ve) = 30);
+                !P_FixedVesselOfCargoPosition('185098') := '001';
+                
+                P_AssignedVesselOfCargoPosition(cap | Mod(Ord(cap), 22) = 0 and round(Ord(cap)/20) = 1) := First(ve | Ord(ve) = 12);
+                P_AssignedVesselOfCargoPosition(cap | Mod(Ord(cap), 22) = 0 and round(Ord(cap)/20) = 2) := First(ve | Ord(ve) = 22);
+                P_AssignedVesselOfCargoPosition(cap | Mod(Ord(cap), 22) = 0 and round(Ord(cap)/20) = 3) := First(ve | Ord(ve) = 32);
+                
+                P_DemurrageRate(ve) := 50 [$/day];
+                
+                P_CurrentPortOfVessel(ve | Mod(Ord(ve), 10) = 1) := 'CHANGZHOU';
+                P_CurrentPortETDOfVessel(ve | Mod(Ord(ve), 10) = 1) := '2018-08-10 00:00:00';
+                P_CurrentPortOfVessel(ve | Mod(Ord(ve), 10) = 2) := 'JINGTANG';
+                P_CurrentPortETDOfVessel(ve | Mod(Ord(ve), 10) = 2) := '2018-08-24 00:00:00';
+                P_CurrentPortOfVessel(ve | Mod(Ord(ve), 10) = 3) := 'KOKURA';
+                P_CurrentPortETDOfVessel(ve | Mod(Ord(ve), 10) = 3) := '2018-08-25 00:00:00';
+                P_CurrentPortOfVessel(ve | Mod(Ord(ve), 10) = 4) := 'LIUHENG';
+                P_CurrentPortETDOfVessel(ve | Mod(Ord(ve), 10) = 4) := '2018-08-26 00:00:00';
+                P_CurrentPortOfVessel(ve | Mod(Ord(ve), 10) = 5) := 'PORT KEMBLA';
+                P_CurrentPortETDOfVessel(ve | Mod(Ord(ve), 10) = 5) := '2018-08-27 00:00:00';
+                P_CurrentPortOfVessel(ve | Mod(Ord(ve), 10) = 6) := 'QINGDAO';
+                P_CurrentPortETDOfVessel(ve | Mod(Ord(ve), 10) = 6) := '2018-08-28 00:00:00';
+                P_CurrentPortOfVessel(ve | Mod(Ord(ve), 10) = 7) := 'RIZHAO';
+                P_CurrentPortETDOfVessel(ve | Mod(Ord(ve), 10) = 7) := '2018-08-29 00:00:00';
+                P_CurrentPortOfVessel(ve | Mod(Ord(ve), 10) = 8) := 'SINGAPORE';
+                P_CurrentPortETDOfVessel(ve | Mod(Ord(ve), 10) = 8) := '2018-08-30 00:00:00';
+                P_CurrentPortOfVessel(ve | Mod(Ord(ve), 10) = 9) := 'WENZHOU';
+                P_CurrentPortETDOfVessel(ve | Mod(Ord(ve), 10) = 9) := '2018-08-31 00:00:00';
+                P_CurrentPortOfVessel(ve | Mod(Ord(ve), 10) = 0) := 'ZHENJIANG';
+                P_CurrentPortETDOfVessel(ve | Mod(Ord(ve), 10) = 0) := '2018-09-01 00:00:00';
+                
+                P_LadenSpeedOfVessel(ve | P_LadenSpeedOfVessel(ve) <= 0[nm/hour]) := 10[nm/hour];
                 P_BallastSpeedOfVessel(ve | P_BallastSpeedOfVessel(ve) <= 0[nm/hour]) := 12[nm/hour];
+                P_LadenBunkerConsumptionRateOfVessel(ve | P_LadenBunkerConsumptionRateOfVessel(ve) <= 0[ton/day]) := 35[ton/day];
+                P_BallastBunkerConsumptionRateOfVessel(ve | P_BallastBunkerConsumptionRateOfVessel(ve) <= 0[ton/day]) := 42[ton/day];
+                P_PortBunkerConsumptionRateOfVessel(ve | P_PortBunkerConsumptionRateOfVessel(ve) <= 0 [ton/day]) := 2[ton/day];
                 P_OtherWeightOfVessel(ve) := 100[ton];
                 
+                P_a(cap, po) := 5[day];
+                P_b(cap, po) := 2[day];
+                P_c := 1000[$/day];
+                P_f := 0.000511[$/ton];
+                P_g(cap, po) := 100[$];
+                
+                !Convert P_RequireESSOfCargoPosition to binary
+                for (cap) do
+                	if P_RequireESSOfCargoPositionString(cap) = "ESS" then
+                		P_RequireESSOfCargoPosition(cap) := 1;
+                	else
+                		P_RequireESSOfCargoPosition(cap) := 0;
+                	endif;	
+                endfor;
+                
+                !Generate S_ESSCapabilityOfVessel
+                for (ve) do
+                	if P_NameOfVessel(ve) in S_VesselWithESS then
+                		P_ESSCapabilityOfVessel(ve) := 1;
+                		P_ESSCapabilityOfVesselString(ve) := "ESS";
+                	else
+                		P_ESSCapabilityOfVessel(ve) := 0;
+                		P_ESSCapabilityOfVesselString(ve) := "";
+                	endif;
+                endfor;
+                
+                !Generate P_NameofFixedVessel(cap) for display
+                P_NameOfFixedVessel(cap) := P_NameOfVessel(P_FixedVesselOfCargoPosition(cap));
                 
                 !Populate Assigned Discharge Port Of Cargo Position dataset to Possible Discharge Port Of Cargo Position dataset
                 P_SNOfPossibleDischargePort := First(sn);
@@ -249,12 +351,13 @@ Model Main_AIMMS_Scheduling {
                 P_CargoPositionVesselCompatibility(cap, ve) := 1; !Default value
                 
                 for (cap, ve) do
-                	P_TimeFromCurrentPortToLoadingPort := (P_Distance(P_CurrentPortOfVessel(ve), P_LoadingPortOfCargoPosition(cap)) / P_BallastSpeedOfVessel(ve)) * (1 + P_SeaFactor);
-                	P_VesselETA(cap, ve) := MomentToTimeSlot(
-                					S_HourlyCalendar, ! (input) a calendar
-                					P_CurrentPortETDOfVessel(ve), ! (input) an element (time-slot) in the calendar
-                					P_TimeFromCurrentPortToLoadingPort ! (input) a numerical value
-                				);
+                	P_TimeFromCurrentPortToLoadingPort := round((P_Distance(P_CurrentPortOfVessel(ve), P_LoadingPortOfCargoPosition(cap)) / P_BallastSpeedOfVessel(ve)) * (1 + P_SeaFactor));
+                	P_VesselETA(cap, ve) := P_CurrentPortETDOfVessel(ve) + P_TimeFromCurrentPortToLoadingPort;
+                	!P_VesselETA(cap, ve) := MomentToTimeSlot(
+                	!				S_HourlyCalendar, ! (input) a calendar
+                	!				P_CurrentPortETDOfVessel(ve), ! (input) an element (time-slot) in the calendar
+                	!				P_TimeFromCurrentPortToLoadingPort ! (input) a numerical value
+                	!			);
                 endfor;
                 
                 for (cap, ve) do
@@ -323,7 +426,7 @@ Model Main_AIMMS_Scheduling {
                 P_d := 62;
                 P_e := 3.5;
                 P_h(cap, po) := 170;
-                P_DifferentialFreightRate(cap) := sum(sn, P_ProbabilityDischargePortOfCargoPosition(cap, sn) * 
+                P_DifferentialFreightRate(cap) := sum(sn | P_PossibleDischargePortOfCargoPosition(cap, sn) <> '', P_ProbabilityDischargePortOfCargoPosition(cap, sn) * 
                 	((P_a(cap, P_PossibleDischargePortOfCargoPosition(cap, sn)) * (P_c + P_d * P_f) + P_b(cap, P_PossibleDischargePortOfCargoPosition(cap, sn)) * (P_c + P_e * P_f) + P_g(cap, P_PossibleDischargePortOfCargoPosition(cap, sn))) /
                 	P_h(cap, P_PossibleDischargePortOfCargoPosition(cap, sn))));
                 
@@ -331,23 +434,24 @@ Model Main_AIMMS_Scheduling {
                 
                 for ((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) do
                 	P_TurnTime := 0.5[day];
-                	P_LaycanStartDateOfCargoPositionMinusHalfDay := MomentToTimeSlot(
-                								S_HourlyCalendar, ! (input) a calendar
-                								P_LaycanStartDateOfCargoPosition(cap), ! (input) an element (time-slot) in the calendar
-                								-0.5[day] ! (input) a numerical value
-                							);
-                	if P_VesselETA(cap, ve) <= P_LaycanStartDateOfCargoPositionMinusHalfDay then
+                
+                	!P_LaycanStartDateOfCargoPositionMinusHalfDay := MomentToTimeSlot(
+                	!							S_HourlyCalendar, ! (input) a calendar
+                	!							P_LaycanStartDateOfCargoPosition(cap), ! (input) an element (time-slot) in the calendar
+                	!							-0.5[day] ! (input) a numerical value
+                	!						);
+                	if P_VesselETA(cap, ve) <= P_LaycanStartDateOfCargoPosition(cap) - 0.5[day] then
                 		P_TurnTime := 0[day];
-                	elseif P_LaycanStartDateOfCargoPosition(cap) > P_VesselETA(cap, ve) > P_LaycanStartDateOfCargoPositionMinusHalfDay then
+                	elseif P_LaycanStartDateOfCargoPosition(cap) > P_VesselETA(cap, ve) > P_LaycanStartDateOfCargoPosition(cap) - 0.5[day] then
                 		P_TurnTime := 0.5[day] - (P_LaycanStartDateOfCargoPosition(cap) - P_VesselETA(cap, ve));
                 	endif;
                 
                 	P_AllowedTime := P_TurnTime + P_CargoEstimate(cap, ve) / P_ScaleOfVessel(ve);
                 
                 	if (P_TTIPLoadingPort(cap, ve) - P_AllowedTime) >= 0[day] then
-                		P_DumurrageRevenueLoadingPort(cap, ve) := (P_TTIPLoadingPort(cap, ve) - P_AllowedTime) * P_DemurrageRate(ve);
+                		P_DemurrageRevenueLoadingPort(cap, ve) := (P_TTIPLoadingPort(cap, ve) - P_AllowedTime) * P_DemurrageRate(ve);
                 	else
-                		P_DumurrageRevenueLoadingPort(cap, ve) := (P_AllowedTime - P_TTIPLoadingPort(cap, ve)) * P_DemurrageRate(ve) / 2;
+                		P_DemurrageRevenueLoadingPort(cap, ve) := (P_AllowedTime - P_TTIPLoadingPort(cap, ve)) * P_DemurrageRate(ve) / 2;
                 	endif;
                 endfor;
                 
@@ -373,20 +477,29 @@ Model Main_AIMMS_Scheduling {
                 
                 P_VesselFreightCost((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'VC' or P_TypeOfVessel(ve) = 'COA' or P_TypeOfVessel(ve) = 'CVC')) := P_VesselFreightCostRate(ve) * P_CargoEstimate(cap, ve) * (1 + P_AddcomCostRate);
                 
-                P_DumurrageCostDischargePort((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'VC' or P_TypeOfVessel(ve) = 'COA' or P_TypeOfVessel(ve) = 'CVC')) := sum(sn, 
+                P_DemurrageCostDischargePort((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'VC' or P_TypeOfVessel(ve) = 'COA' or P_TypeOfVessel(ve) = 'CVC')) := sum(sn, 
                 	(P_ProbabilityDischargePortOfCargoPosition(cap, sn) * (P_TTIPDischargePortOfCargoPosition(cap, sn) - P_AllowedTimeAtDischargePort(P_PossibleDischargePortOfCargoPosition(cap, sn)))) * P_DemurrageRate(ve));
                 
-                P_VesselType2Cost((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'VC' or P_TypeOfVessel(ve) = 'COA' or P_TypeOfVessel(ve) = 'CVC')) := P_VesselFreightCost(cap, ve) + P_DumurrageCostDischargePort(cap, ve);
+                P_VesselType2Cost((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'VC' or P_TypeOfVessel(ve) = 'COA' or P_TypeOfVessel(ve) = 'CVC')) := P_VesselFreightCost(cap, ve) + P_DemurrageCostDischargePort(cap, ve);
                 
-                P_ETAGapPenalty((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) :=  P_WeightOfETAGapPenalty * abs((P_VesselETA(cap, ve) - P_ETATargetOfCargoPosition(cap)));
+                !Initialize weights and parameters for penalty
+                P_WeightOfETAGapPenalty := 1000[$/day];
+                P_WeightOfAssignedVesselChangePenalty := 2000[$]; !2000$/change
+                P_WeightOfOutsideETATargetWindowPenalty := 1000[$/day];
+                P_WeightOfETABeforeLaycanPenalty := 1000[$/day];
+                P_ThresholdOfLongDischargeTTIP := 3[day];
+                P_LongDischargeTTIPPenaltyParameter := 1000[$];
                 
-                P_AssignedVesselChangePenalty((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and P_AssignedVesselOfCargoPosition(cap) <> ve) := P_WeightOfAssignedVesselChangePenalty * 1;
+                !Calculate non-weighted penalty
+                P_ETAGapPenalty((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) := abs((P_VesselETA(cap, ve) - P_ETATargetOfCargoPosition(cap)));
+                
+                P_AssignedVesselChangePenalty((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and P_AssignedVesselOfCargoPosition(cap) <> ve) := 1;
                 
                 for((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) do
                 	if P_VesselETA(cap, ve) < (P_ETATargetOfCargoPosition(cap) - P_ETABufferBeforeOfCargoPosition(cap)) then
-                		P_OutsideETATargetWindowPenalty(cap, ve) := P_WeightOfOutsideETATargetWindowPenalty * ((P_ETATargetOfCargoPosition(cap) - P_ETABufferBeforeOfCargoPosition(cap)) - P_VesselETA(cap, ve));
+                		P_OutsideETATargetWindowPenalty(cap, ve) := (P_ETATargetOfCargoPosition(cap) - P_ETABufferBeforeOfCargoPosition(cap)) - P_VesselETA(cap, ve);
                 	elseif P_VesselETA(cap, ve) > (P_ETATargetOfCargoPosition(cap) + P_ETABufferAfterOfCargoPosition(cap)) then
-                		P_OutsideETATargetWindowPenalty(cap, ve) := P_WeightOfOutsideETATargetWindowPenalty * (P_VesselETA(cap, ve) - (P_ETATargetOfCargoPosition(cap) + P_ETABufferAfterOfCargoPosition(cap)));
+                		P_OutsideETATargetWindowPenalty(cap, ve) := P_VesselETA(cap, ve) - (P_ETATargetOfCargoPosition(cap) + P_ETABufferAfterOfCargoPosition(cap));
                 	else
                 		P_OutsideETATargetWindowPenalty(cap, ve) := 0;
                 	endif;
@@ -394,7 +507,7 @@ Model Main_AIMMS_Scheduling {
                 
                 for((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1) do
                 	if P_VesselETA(cap, ve) < P_LaycanStartDateOfCargoPosition(cap) then
-                		P_ETABeforeLaycanPenalty(cap, ve) := P_WeightOfETABeforeLaycanPenalty * (P_LaycanStartDateOfCargoPosition(cap) - P_VesselETA(cap, ve));
+                		P_ETABeforeLaycanPenalty(cap, ve) :=  P_LaycanStartDateOfCargoPosition(cap) - P_VesselETA(cap, ve);
                 	else
                 		P_ETABeforeLaycanPenalty(cap, ve) := 0;
                 	endif;
@@ -415,6 +528,12 @@ Model Main_AIMMS_Scheduling {
             ElementParameter P_CategoryOfVessel {
                 IndexDomain: ve;
                 Range: S_VesselCategory;
+            }
+            StringParameter P_ESSCapabilityOfVesselString {
+                IndexDomain: ve;
+            }
+            StringParameter P_NameOfFixedVessel {
+                IndexDomain: cap;
             }
             Parameter P_TimeFromCurrentPortToLoadingPort {
                 Unit: hour;
@@ -462,9 +581,6 @@ Model Main_AIMMS_Scheduling {
             Parameter P_TurnTime {
                 Unit: day;
             }
-            ElementParameter P_LaycanStartDateOfCargoPositionMinusHalfDay {
-                Range: S_HourlyCalendar;
-            }
             Parameter P_AllowedTime {
                 Unit: day;
             }
@@ -482,22 +598,6 @@ Model Main_AIMMS_Scheduling {
             Parameter P_AllowedTimeAtDischargePort {
                 IndexDomain: po;
                 Unit: day;
-            }
-            Parameter P_WeightOfETAGapPenalty {
-                Unit: 1/day;
-            }
-            Parameter P_WeightOfAssignedVesselChangePenalty;
-            Parameter P_WeightOfOutsideETATargetWindowPenalty {
-                Unit: 1/day;
-            }
-            Parameter P_WeightOfETABeforeLaycanPenalty {
-                Unit: 1/day;
-            }
-            Parameter P_ThresholdOfLongDischargeTTIP {
-                Unit: day;
-            }
-            Parameter P_LongDischargeTTIPPenaltyParameter {
-                Range: nonnegative;
             }
         }
         Section TestSection {
@@ -530,6 +630,24 @@ Model Main_AIMMS_Scheduling {
         }
     }
     Section Optimization_Model {
+        Procedure SolveModel {
+            Body: {
+                solve M_MathModel;
+                empty Raw_results;
+                
+                P_Assignment(cap, ve) := V_Assignment(cap, ve);
+                P_TotalCargoRevenue := V_TotalCargoRevenue;
+                P_TotalVesselType1Cost := V_TotalVesselType1Cost;
+                P_TotalVesselType2Cost := V_TotalVesselType2Cost;
+                P_TotalETAGapPenalty := V_TotalETAGapPenalty;
+                P_TotalAssignedVesselChangePenalty := V_TotalAssignedVesselChangePenalty;
+                P_TotalOutsideETATargetWindowPenalty := V_TotalOutsideETATargetWindowPenalty;
+                P_TotalETABeforeLaycanPenalty := V_TotalETABeforeLaycanPenalty;
+                P_TotalLongDischargeTTIPPenalty := V_TotalLongDischargeTTIPPenalty;
+                
+                dialogmessage("Solve complete");
+            }
+        }
         Section Model_Inputs {
             DeclarationSection Calendar_Date {
                 Calendar S_HourlyCalendar {
@@ -869,7 +987,7 @@ Model Main_AIMMS_Scheduling {
                     IndexDomain: (cap,ve);
                     Unit: $;
                 }
-                Parameter P_DumurrageRevenueLoadingPort {
+                Parameter P_DemurrageRevenueLoadingPort {
                     IndexDomain: (cap,ve);
                     Unit: $;
                 }
@@ -909,7 +1027,7 @@ Model Main_AIMMS_Scheduling {
                     IndexDomain: (cap,ve) | (P_TypeOfVessel(ve) = "VC" OR P_TypeOfVessel(ve) = "COA" OR P_TypeOfVessel(ve) = "CVC");
                     Unit: $;
                 }
-                Parameter P_DumurrageCostDischargePort {
+                Parameter P_DemurrageCostDischargePort {
                     IndexDomain: (cap,ve) | (P_TypeOfVessel(ve) = "VC" or P_TypeOfVessel(ve) = "COA" or P_TypeOfVessel(ve) = "CVC");
                     Unit: $;
                 }
@@ -919,19 +1037,22 @@ Model Main_AIMMS_Scheduling {
                 }
                 Parameter P_ETAGapPenalty {
                     IndexDomain: (cap,ve);
+                    Unit: day;
                 }
                 Parameter P_AssignedVesselChangePenalty {
                     IndexDomain: (cap,ve);
                 }
                 Parameter P_OutsideETATargetWindowPenalty {
                     IndexDomain: (cap,ve);
+                    Unit: day;
                 }
                 Parameter P_ETABeforeLaycanPenalty {
                     IndexDomain: (cap,ve);
+                    Unit: day;
                 }
                 Parameter P_LongDischargeTTIPPenalty {
                     IndexDomain: (cap,ve) | (P_TypeOfVessel(ve) = "OV" OR P_TypeOfVessel(ve) = "TC");
-                    InitialData: 0;
+                    Unit: $;
                 }
             }
         }
@@ -944,30 +1065,270 @@ Model Main_AIMMS_Scheduling {
             }
         }
         Section Model_Constraints {
-            Constraint FixedVessel {
+            Constraint C_FixedVessel {
                 IndexDomain: (cap)| P_FixedVesselOfCargoPosition(cap) <> '';
                 Definition: V_Assignment(cap, P_FixedVesselOfCargoPosition(cap)) = 1;
             }
-            Constraint CargoPositionVesselCompatibility {
-                IndexDomain: (cap,ve) | P_CargoPositionVesselCompatibility(cap, ve) = 0;
+            Constraint C_CargoPositionVesselCompatibility {
+                IndexDomain: (cap,ve) | P_CargoPositionVesselCompatibility(cap, ve) = 0 and P_FixedVesselOfCargoPosition(cap) = '';
                 Definition: V_Assignment(cap, ve) = 0;
             }
-            Constraint PortVesselCompatibility {
-                IndexDomain: (cap,ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and sum(sn, P_PortVesselCompatibility(P_PossibleDischargePortOfCargoPosition(cap, sn), ve)) = 0;
+            Constraint C_PortVesselCompatibility {
+                IndexDomain: (cap,ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and sum(sn, P_PortVesselCompatibility(P_PossibleDischargePortOfCargoPosition(cap, sn), ve)) = 0 and P_FixedVesselOfCargoPosition(cap) = '';
                 Definition: V_Assignment(cap, ve) = 0;
             }
-            Constraint OneCargoPositionToOneVessel {
+            Constraint C_OneCargoPositionToOneVessel {
                 IndexDomain: cap;
                 Definition: sum(ve | P_CargoPositionVesselCompatibility(cap, ve) = 1, V_Assignment(cap, ve)) <= 1;
             }
-            Constraint CargoPositionESSRequirement {
-                IndexDomain: (cap,ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and P_RequireESSOfCargoPosition(cap) = 1 and P_ESSCapabilityOfVessel(ve) = 0;
+            Constraint C_OneVesselToOneCargoPosition {
+                IndexDomain: ve;
+                Definition: sum(cap | P_CargoPositionVesselCompatibility(cap, ve) = 1, V_Assignment(cap, ve)) <= 1;
+            }
+            Constraint C_NoVesselETAAfterCargoPositionETBWithBuffer {
+                IndexDomain: cap;
+                Definition: sum(ve | P_CargoPositionVesselCompatibility(cap, ve) = 1 and P_VesselETA(cap, ve) > P_ETBTargetOfCargoPosition(cap) - P_ETBBufferBeforeOfCargoPosition(cap), V_Assignment(cap, ve)) = 0;
+            }
+            Constraint C_NoVesselETAAfterCargoPositionLaycanEnd {
+                IndexDomain: cap;
+                Definition: sum(ve | P_CargoPositionVesselCompatibility(cap, ve) = 1 and P_VesselETA(cap, ve) > P_LaycanEndDateOfCargoPosition(cap), V_Assignment(cap, ve)) = 0;
+            }
+            Constraint C_CargoPositionESSRequirement {
+                IndexDomain: (cap,ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and P_RequireESSOfCargoPosition(cap) = 1 and P_ESSCapabilityOfVessel(ve) = 0 and P_FixedVesselOfCargoPosition(cap) = '';
                 Definition: V_Assignment(cap, ve) = 0;
             }
+            Constraint C_SumCargoRevenue {
+                Unit: $;
+                Definition: V_TotalCargoRevenue = sum((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1, P_CargoRevenue(cap, ve) * V_Assignment(cap, ve));
+            }
+            Constraint C_SumVesselType1Cost {
+                Unit: $;
+                Definition: {
+                    V_TotalVesselType1Cost = sum((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'OV' or P_TypeOfVessel(ve) = 'TC'),
+                    			P_VesselType1Cost(cap, ve) * V_Assignment(cap, ve))
+                }
+            }
+            Constraint C_SumVesselType2Cost {
+                Unit: $;
+                Definition: {
+                    V_TotalVesselType2Cost = sum((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1 and (P_TypeOfVessel(ve) = 'VC' or P_TypeOfVessel(ve) = 'COA' or P_TypeOfVessel(ve) = 'CVC'),
+                    			P_VesselType2Cost(cap, ve) * V_Assignment(cap, ve))
+                }
+            }
+            Constraint C_SumETAGapPenalty {
+                Unit: day;
+                Definition: V_TotalETAGapPenalty = sum((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1, P_ETAGapPenalty(cap, ve) * V_Assignment(cap, ve));
+            }
+            Constraint C_SumAssignedVesselChangePenalty {
+                Definition: V_TotalAssignedVesselChangePenalty = sum((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1, P_AssignedVesselChangePenalty(cap, ve) * V_Assignment(cap, ve));
+            }
+            Constraint C_SumOutsideETATargetWindowPenalty {
+                Unit: day;
+                Definition: V_TotalOutsideETATargetWindowPenalty = sum((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1, P_OutsideETATargetWindowPenalty(cap, ve) * V_Assignment(cap, ve));
+            }
+            Constraint C_SumETABeforeLaycanPenalty {
+                Unit: day;
+                Definition: V_TotalETABeforeLaycanPenalty = sum((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1, P_ETABeforeLaycanPenalty(cap, ve) * V_Assignment(cap, ve));
+            }
+            Constraint C_SumLongDischargeTTIPPenalty {
+                Unit: $;
+                Definition: V_TotalLongDischargeTTIPPenalty = sum((cap, ve) | P_CargoPositionVesselCompatibility(cap, ve) = 1, P_LongDischargeTTIPPenalty(cap, ve) * V_Assignment(cap, ve));
+            }
+            Constraint C_Objective {
+                Unit: $;
+                Definition: {
+                    V_Objective = 	V_TotalCargoRevenue
+                    		- V_TotalVesselType1Cost
+                    		- V_TotalVesselType2Cost
+                    		- P_WeightOfETAGapPenalty * V_TotalETAGapPenalty
+                    		- P_WeightOfAssignedVesselChangePenalty * V_TotalAssignedVesselChangePenalty
+                    		- P_WeightOfOutsideETATargetWindowPenalty * V_TotalOutsideETATargetWindowPenalty
+                    		- P_WeightOfETABeforeLaycanPenalty * V_TotalETABeforeLaycanPenalty
+                    		- V_TotalLongDischargeTTIPPenalty
+                }
+            }
         }
-        Section Model_Objectives;
+        Section Model_Objectives {
+            Variable V_TotalCargoRevenue {
+                Range: free;
+                Unit: $;
+            }
+            Variable V_TotalVesselType1Cost {
+                Range: free;
+                Unit: $;
+            }
+            Variable V_TotalVesselType2Cost {
+                Range: free;
+                Unit: $;
+            }
+            Variable V_TotalETAGapPenalty {
+                Range: free;
+                Unit: day;
+            }
+            Variable V_TotalAssignedVesselChangePenalty {
+                Range: free;
+            }
+            Variable V_TotalOutsideETATargetWindowPenalty {
+                Range: free;
+                Unit: day;
+            }
+            Variable V_TotalETABeforeLaycanPenalty {
+                Range: free;
+                Unit: day;
+            }
+            Variable V_TotalLongDischargeTTIPPenalty {
+                Range: free;
+                Unit: $;
+            }
+            Variable V_Objective {
+                Range: free;
+                Unit: $;
+            }
+            DeclarationSection Model_Weights {
+                Parameter P_WeightOfETAGapPenalty {
+                    Unit: $/day;
+                }
+                Parameter P_WeightOfAssignedVesselChangePenalty {
+                    Unit: $;
+                }
+                Parameter P_WeightOfOutsideETATargetWindowPenalty {
+                    Unit: $/day;
+                }
+                Parameter P_WeightOfETABeforeLaycanPenalty {
+                    Unit: $/day;
+                }
+                Parameter P_ThresholdOfLongDischargeTTIP {
+                    Unit: day;
+                }
+                Parameter P_LongDischargeTTIPPenaltyParameter {
+                    Range: nonnegative;
+                    Unit: $;
+                }
+            }
+        }
+        Section Mathematical_Model {
+            Set S_ModelVariables {
+                SubsetOf: AllVariables;
+                Definition: {
+                    data{
+                    	V_Assignment,
+                    	V_TotalCargoRevenue,
+                    	V_TotalVesselType1Cost,
+                    	V_TotalVesselType2Cost,
+                    	V_TotalETAGapPenalty,
+                    	V_TotalAssignedVesselChangePenalty,
+                    	V_TotalOutsideETATargetWindowPenalty,
+                    	V_TotalETABeforeLaycanPenalty,
+                    	V_TotalLongDischargeTTIPPenalty,
+                    	V_Objective
+                    	}
+                }
+            }
+            Set S_ModelConstraints {
+                SubsetOf: AllConstraints;
+                Definition: {
+                    data{
+                    	C_FixedVessel,
+                    	C_CargoPositionVesselCompatibility,
+                    	C_PortVesselCompatibility,
+                    	C_OneCargoPositionToOneVessel,
+                    	C_OneVesselToOneCargoPosition,
+                    	C_NoVesselETAAfterCargoPositionETBWithBuffer,
+                    	C_NoVesselETAAfterCargoPositionLaycanEnd,
+                    	C_CargoPositionESSRequirement,
+                    	C_SumCargoRevenue,
+                    	C_SumVesselType1Cost,
+                    	C_SumVesselType2Cost,
+                    	C_SumETAGapPenalty,
+                    	C_SumAssignedVesselChangePenalty,
+                    	C_SumOutsideETATargetWindowPenalty,
+                    	C_SumETABeforeLaycanPenalty,
+                    	C_SumLongDischargeTTIPPenalty,
+                    	C_Objective
+                    	}
+                }
+            }
+            MathematicalProgram M_MathModel {
+                Objective: V_Objective;
+                Direction: maximize;
+                Constraints: S_ModelConstraints;
+                Variables: S_ModelVariables;
+                Type: MIP;
+            }
+        }
     }
-    Section Results;
+    Section Results {
+        DeclarationSection Raw_results {
+            Parameter P_Assignment {
+                IndexDomain: (cap,ve);
+                Range: binary;
+            }
+            Parameter P_TotalCargoRevenue {
+                Unit: $;
+            }
+            Parameter P_TotalVesselType1Cost {
+                Unit: $;
+            }
+            Parameter P_TotalVesselType2Cost {
+                Unit: $;
+            }
+            Parameter P_TotalETAGapPenalty {
+                Unit: day;
+            }
+            Parameter P_TotalAssignedVesselChangePenalty;
+            Parameter P_TotalOutsideETATargetWindowPenalty {
+                Unit: day;
+            }
+            Parameter P_TotalETABeforeLaycanPenalty {
+                Unit: day;
+            }
+            Parameter P_TotalLongDischargeTTIPPenalty {
+                Unit: $;
+            }
+        }
+        Procedure PostProcess {
+            Body: {
+                empty Results_for_Display;
+                
+                P_FinalAssignedVesselOfCargoPosition(cap) := First(ve | P_Assignment(cap, ve) = 1);
+                P_NameOfFinalAssignedVessel(cap) := P_NameOfVessel(P_FinalAssignedVesselOfCargoPosition(cap));
+                P_TypeOfFinalAssignedVessel(cap) := P_TypeOfVessel(P_FinalAssignedVesselOfCargoPosition(cap));
+                
+                
+                P_TotalVesselCost := P_TotalVesselType1Cost + P_TotalVesselType2Cost;
+                P_TotalMargin := P_TotalCargoRevenue - P_TotalVesselCost;
+                P_NumberOfLongDischargeTTIP := round(P_TotalLongDischargeTTIPPenalty / P_LongDischargeTTIPPenaltyParameter);
+            }
+        }
+        DeclarationSection Results_for_Display {
+            ElementParameter P_FinalAssignedVesselOfCargoPosition {
+                IndexDomain: cap;
+                Range: S_Vessel;
+            }
+            StringParameter P_NameOfFinalAssignedVessel {
+                IndexDomain: cap;
+            }
+            ElementParameter P_TypeOfFinalAssignedVessel {
+                IndexDomain: cap;
+                Range: S_VesselType;
+            }
+            Parameter P_TotalVesselCost {
+                Unit: $;
+            }
+            Parameter P_TotalMargin {
+                Unit: $;
+            }
+            Parameter P_NumberOfLongDischargeTTIP;
+        }
+    }
+    Procedure ProcessesinOneGo {
+        Body: {
+            ReadInput;
+            Prepocess;
+            SolveModel;
+            PostProcess;
+        }
+    }
     Procedure MainInitialization {
         Comment: "Add initialization statements here that do NOT require any library being initialized already.";
     }
